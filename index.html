@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Zwire · console module (standalone)</title>
+<meta name="theme-color" content="#040907">
+<style>
+/* ====================================================================
+   ZWIRE CONSOLE MODULE — standalone, visual-first.
+   7-beat path: Connect -> Collect (themes, multi-language, round-trip)
+   -> Classify -> Grade -> Analyze -> Human review -> Report.
+   Minimal text. Neon palette. No external deps. Built to be dropped
+   into the V4 site once approved (fonts swap to Geist on integration).
+==================================================================== */
+:root{
+  --bg:#040907; --panel:#08130D; --panel-2:#0B1A12; --line:rgba(120,205,160,0.12); --line-2:rgba(120,210,160,0.22);
+  --ink:#EAF6EF; --ink-2:#C7D6CE; --ink-3:#7E9488;
+  --neon:#1BF58C; --neon-soft:#5DFCB0; --neon-glow:rgba(27,245,140,0.22);
+  --g-ok:#5BCB91; --g-mid:#8FBEDE; --g-low:#E0B257;
+  --r:12px; --ease:cubic-bezier(.2,.7,.3,1);
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:ui-sans-serif,system-ui,-apple-system,Helvetica,Arial,sans-serif;
+}
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; }
+body{ display:flex; align-items:center; justify-content:center; min-height:100vh; padding:40px 16px; }
+
+.zcm{ width:100%; max-width:980px; }
+.zcm-top{ display:flex; align-items:baseline; justify-content:space-between; gap:14px; margin-bottom:18px; }
+.zcm-kick{ font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--neon); }
+.zcm-flow{ font-family:var(--mono); font-size:11px; color:var(--ink-3); letter-spacing:.04em; }
+.zcm-flow b{ color:var(--ink-2); font-weight:600; }
+
+.zcm-frame{ position:relative; border:1px solid var(--line-2); border-radius:var(--r); background:linear-gradient(180deg,var(--panel-2),var(--panel)); overflow:hidden; }
+
+/* step rail — a connected pipeline: nodes joined by connectors that fill as it advances */
+.zcm-rail{ display:flex; padding:20px 10px 15px; border-bottom:1px solid var(--line); overflow-x:auto; scrollbar-width:none; }
+.zcm-rail::-webkit-scrollbar{ display:none; }
+.zcm-step{ position:relative; flex:1 0 auto; min-width:92px; display:flex; flex-direction:column; align-items:center; gap:10px; padding:0 6px; background:transparent; border:0; cursor:pointer; color:inherit; }
+.zcm-step .node{ position:relative; z-index:2; width:11px; height:11px; border-radius:50%; border:1px solid var(--line-2); background:var(--panel); transition:background .3s var(--ease),border-color .3s,box-shadow .3s; }
+.zcm-step::after{ content:""; position:absolute; top:5px; left:50%; width:100%; height:1px; background:var(--line); z-index:1; }
+.zcm-step:last-child::after{ display:none; }
+.zcm-step .l{ font-size:12.5px; color:var(--ink-3); font-weight:500; text-align:center; transition:color .25s var(--ease); }
+.zcm-step.is-done .node{ background:var(--neon); border-color:var(--neon); box-shadow:0 0 10px var(--neon-glow); }
+.zcm-step.is-done::after{ background:var(--neon); box-shadow:0 0 8px var(--neon-glow); }
+.zcm-step.is-done .l{ color:var(--ink-2); }
+.zcm-step.is-active .node{ border-color:var(--neon); background:var(--neon); box-shadow:0 0 0 4px var(--neon-glow); }
+.zcm-step.is-active .l{ color:var(--ink); }
+.zcm-step.is-active::after{ background:repeating-linear-gradient(90deg,var(--neon) 0 6px,transparent 6px 12px); background-size:12px 1px; animation:flow .6s linear infinite; }
+@keyframes flow{ to{ background-position:12px 0; } }
+
+/* stage */
+.zcm-stage{ position:relative; min-height:340px; padding:22px; }
+.zcm-head{ display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+.zcm-dot{ width:7px; height:7px; border-radius:50%; background:var(--neon); box-shadow:0 0 10px var(--neon); }
+.zcm-h{ font-size:18px; font-weight:600; letter-spacing:-.01em; }
+.zcm-sub{ margin:2px 0 18px; font-size:13px; color:var(--ink-3); max-width:60ch; line-height:1.5; }
+
+/* views */
+.zcm-view{ display:none; }
+.zcm-view.show{ display:block; animation:fade .4s var(--ease); }
+@keyframes fade{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:none; } }
+
+/* ---- the FIELD: center node + theme ring (collect) ---- */
+.field{ position:relative; height:248px; }
+.core{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:96px; height:96px; border-radius:50%; border:1px solid var(--line-2); background:radial-gradient(circle at 50% 40%,rgba(27,245,140,.14),transparent 70%); display:flex; align-items:center; justify-content:center; z-index:3; }
+.core .ring{ position:absolute; inset:-8px; border-radius:50%; border:1px solid var(--neon); opacity:.0; animation:pulse 2.6s var(--ease) infinite; }
+@keyframes pulse{ 0%{ transform:scale(.8); opacity:.5;} 100%{ transform:scale(1.5); opacity:0;} }
+.core .lab{ font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--neon-soft); text-align:center; line-height:1.3; }
+
+.theme{ position:absolute; transform:translate(-50%,-50%); display:flex; align-items:center; gap:6px; padding:6px 10px; border:1px solid var(--line); border-radius:20px; background:var(--panel); font-size:11.5px; color:var(--ink-2); white-space:nowrap; opacity:0; transition:opacity .4s var(--ease),border-color .3s; z-index:2; }
+.theme .tdot{ width:5px; height:5px; border-radius:50%; background:var(--ink-3); transition:background .3s,box-shadow .3s; }
+.theme.lit{ opacity:1; }
+.theme.hit{ border-color:var(--line-2); }
+.theme.hit .tdot{ background:var(--neon); box-shadow:0 0 8px var(--neon-glow); }
+.field svg.links{ position:absolute; inset:0; width:100%; height:100%; z-index:1; pointer-events:none; overflow:visible; }
+.field svg .ln{ stroke:var(--line-2); stroke-width:1; fill:none; opacity:0; transition:opacity .3s; }
+.field svg .ln.on{ opacity:.6; }
+.pkt{ r:2.6; fill:var(--neon); filter:drop-shadow(0 0 4px var(--neon-glow)); }
+
+/* language ticker */
+.langs{ position:absolute; left:50%; bottom:6px; transform:translateX(-50%); display:flex; gap:7px; font-family:var(--mono); font-size:10px; color:var(--ink-3); letter-spacing:.08em; }
+.langs b{ color:var(--neon-soft); font-weight:600; }
+
+/* tally row */
+.tally{ display:flex; flex-wrap:wrap; gap:6px 16px; margin-top:14px; font-family:var(--mono); font-size:11px; color:var(--ink-3); }
+.tally b{ color:var(--ink); font-weight:600; }
+
+/* ---- classify / grade : buckets ---- */
+.buckets{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.bucket{ border:1px solid var(--line); border-radius:10px; padding:12px; background:var(--panel); }
+.bucket h4{ margin:0 0 8px; font-size:12px; font-weight:600; color:var(--ink-2); }
+.row{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:6px 0; border-top:1px solid var(--line); font-size:12px; color:var(--ink-2); }
+.row:first-of-type{ border-top:0; }
+.tag{ font-family:var(--mono); font-size:10px; padding:2px 7px; border-radius:5px; letter-spacing:.04em; }
+.tag.ok{ color:var(--g-ok); background:rgba(91,203,145,.1); }
+.tag.mid{ color:var(--g-mid); background:rgba(143,190,222,.1); }
+.tag.low{ color:var(--g-low); background:rgba(224,178,87,.1); }
+
+/* ---- analyze : condense ---- */
+.synth{ display:flex; align-items:center; gap:16px; padding:16px; border:1px solid var(--line); border-radius:10px; background:var(--panel); }
+.synth .meter{ flex:1; height:8px; border-radius:5px; background:var(--line); overflow:hidden; }
+.synth .meter i{ display:block; height:100%; width:0; background:linear-gradient(90deg,var(--neon),var(--neon-soft)); transition:width 1s var(--ease); }
+.synth.go .meter i{ width:82%; }
+.synth .pc{ font-family:var(--mono); font-size:13px; color:var(--ink); }
+
+/* ---- human ---- */
+.human{ display:flex; align-items:center; gap:14px; padding:16px; border:1px solid var(--line-2); border-radius:10px; background:radial-gradient(circle at 0% 0%,rgba(27,245,140,.06),transparent 60%),var(--panel); }
+.human .seal{ flex:none; width:46px; height:46px; border-radius:50%; border:1px solid var(--neon); display:flex; align-items:center; justify-content:center; color:var(--neon); }
+.human .seal svg{ width:22px; height:22px; }
+.human .tx b{ display:block; font-size:13.5px; color:var(--ink); margin-bottom:3px; }
+.human .tx span{ font-size:12.5px; color:var(--ink-3); line-height:1.5; }
+
+/* ---- report ---- */
+.report{ display:flex; align-items:center; gap:16px; }
+.report .doc{ flex:none; width:86px; height:108px; border-radius:8px; border:1px solid var(--line-2); background:linear-gradient(180deg,var(--panel-2),var(--panel)); position:relative; box-shadow:0 10px 30px rgba(0,0,0,.4); }
+.report .doc::before{ content:""; position:absolute; left:12px; right:12px; top:16px; height:2px; background:var(--neon); box-shadow:0 0 8px var(--neon-glow); border-radius:2px; }
+.report .doc::after{ content:""; position:absolute; left:12px; right:30px; top:26px; height:1px; background:var(--line-2); box-shadow:0 6px 0 var(--line),0 12px 0 var(--line),0 18px 0 var(--line); }
+.report .rx b{ display:block; font-size:15px; color:var(--ink); margin-bottom:6px; }
+.report .rx span{ font-size:12.5px; color:var(--ink-3); }
+.report .cta{ display:inline-flex; align-items:center; gap:7px; margin-top:14px; padding:10px 16px; border-radius:9px; background:var(--neon); color:#04130b; font-weight:600; font-size:13px; text-decoration:none; }
+
+/* foot controls */
+.zcm-foot{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; border-top:1px solid var(--line); }
+.zcm-note{ font-family:var(--mono); font-size:11px; color:var(--ink-3); }
+.zcm-ctrls{ display:flex; gap:8px; }
+.zcm-btn{ font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--ink-2); background:transparent; border:1px solid var(--line-2); border-radius:7px; padding:7px 12px; cursor:pointer; transition:border-color .2s,color .2s; }
+.zcm-btn:hover{ color:var(--ink); border-color:var(--neon); }
+
+@media (max-width:680px){
+  .zcm-step{ min-width:84px; }
+  .buckets{ grid-template-columns:1fr; }
+  .zcm-stage{ min-height:380px; }
+  .report{ flex-direction:column; align-items:flex-start; }
+}
+@media (prefers-reduced-motion: reduce){
+  .core .ring{ animation:none; }
+}
+</style>
+</head>
+<body>
+
+<div class="zcm" data-zcm>
+  <div class="zcm-top">
+    <span class="zcm-kick">How the cabinet works</span>
+    <span class="zcm-flow"><b>Subject in</b> &#8594; report out</span>
+  </div>
+
+  <div class="zcm-frame">
+    <!-- step rail -->
+    <div class="zcm-rail" role="tablist" aria-label="Method steps">
+      <button class="zcm-step" data-go="0"><span class="node"></span><span class="l">Connect</span></button>
+      <button class="zcm-step" data-go="1"><span class="node"></span><span class="l">Collect</span></button>
+      <button class="zcm-step" data-go="2"><span class="node"></span><span class="l">Classify</span></button>
+      <button class="zcm-step" data-go="3"><span class="node"></span><span class="l">Grade</span></button>
+      <button class="zcm-step" data-go="4"><span class="node"></span><span class="l">Analyze</span></button>
+      <button class="zcm-step" data-go="5"><span class="node"></span><span class="l">Human review</span></button>
+      <button class="zcm-step" data-go="6"><span class="node"></span><span class="l">Report</span></button>
+    </div>
+
+    <!-- stage -->
+    <div class="zcm-stage">
+      <div class="zcm-head"><span class="zcm-dot"></span><h3 class="zcm-h" data-h>A subject enters the cabinet</h3></div>
+      <p class="zcm-sub" data-sub>A name or company opens a file. The cabinet works on its own terms.</p>
+
+      <!-- VIEW: field (connect + collect) -->
+      <div class="zcm-view" data-view="field">
+        <div class="field" data-field>
+          <svg class="links" data-links aria-hidden="true"></svg>
+          <div class="core"><span class="ring"></span><span class="lab">Zwire<br>cabinet</span></div>
+          <!-- themes injected by JS -->
+          <div class="langs" data-langs aria-hidden="true"></div>
+        </div>
+        <div class="tally">
+          <span><b data-tn>0</b> themes engaged</span>
+          <span><b data-sn>0</b> sources pulled</span>
+          <span><b data-ln>7</b> languages</span>
+        </div>
+      </div>
+
+      <!-- VIEW: buckets (classify + grade) -->
+      <div class="zcm-view" data-view="buckets">
+        <div class="buckets">
+          <div class="bucket">
+            <h4>Identity &amp; record</h4>
+            <div class="row">Corporate ownership <span class="tag ok" data-grade>confirmed</span></div>
+            <div class="row">Judicial record <span class="tag mid" data-grade>probable</span></div>
+          </div>
+          <div class="bucket">
+            <h4>Exposure</h4>
+            <div class="row">Sanctions / PEP <span class="tag ok" data-grade>confirmed</span></div>
+            <div class="row">Adverse media <span class="tag mid" data-grade>probable</span></div>
+          </div>
+          <div class="bucket">
+            <h4>Trails</h4>
+            <div class="row">Asset &amp; financial <span class="tag low" data-grade>possible</span></div>
+            <div class="row">Digital footprint <span class="tag low" data-grade>possible</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: analyze -->
+      <div class="zcm-view" data-view="analyze">
+        <div class="synth" data-synth>
+          <span class="pc">Cross-checked</span>
+          <span class="meter"><i></i></span>
+          <span class="pc"><span data-syn>0</span>%</span>
+        </div>
+        <div class="tally"><span>Every claim weighed against independent sources. What stays thin stays labeled.</span></div>
+      </div>
+
+      <!-- VIEW: human -->
+      <div class="zcm-view" data-view="human">
+        <div class="human">
+          <span class="seal" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>
+          <span class="tx"><b>Intelligence professionals review the file.</b><span>They re-walk the data, challenge each grade, and decide what is solid enough to stand. A person is accountable, not a model.</span></span>
+        </div>
+      </div>
+
+      <!-- VIEW: report -->
+      <div class="zcm-view" data-view="report">
+        <div class="report">
+          <span class="doc" aria-hidden="true"></span>
+          <span class="rx">
+            <b>Your graded brief</b>
+            <span>One file, sourced and graded. Delivered to a single recipient.</span>
+            <br><a class="cta" href="#offers">See the offers <span aria-hidden="true">&#8594;</span></a>
+          </span>
+        </div>
+      </div>
+
+      <span class="sr-only" data-live aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);"></span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const root = document.querySelector('[data-zcm]');
+  if(!root) return;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const $ = s => root.querySelector(s);
+  const steps = [...root.querySelectorAll('.zcm-step')];
+  const views = {}; root.querySelectorAll('.zcm-view').forEach(v => views[v.dataset.view]=v);
+  const hEl=$('[data-h]'), subEl=$('[data-sub]'), liveEl=$('[data-live]');
+  const field=$('[data-field]'), linksSvg=$('[data-links]'), langsEl=$('[data-langs]');
+  const tnEl=$('[data-tn]'), snEl=$('[data-sn]');
+  const synth=$('[data-synth]'), synEl=$('[data-syn]');
+
+  // THEMES — expandable. Z: these are themes, not "families".
+  const THEMES = [
+    'Maritime &amp; movement','Facial recognition','Judicial records','Fraud &amp; financial crime',
+    'Sanctions &amp; PEP','Corporate ownership','Adverse media','Digital footprint','Asset trails'
+  ];
+  const LANGS = ['EN','FR','RU','AR','ZH','ES','DE'];
+  const SRC_TARGET = 40;
+
+  const BEATS = [
+    { view:'field', h:'A subject enters the cabinet',
+      sub:'A name or company opens a file. The cabinet works on its own terms.', note:'File open.' },
+    { view:'field', h:'It reaches out across themes',
+      sub:'The cabinet queries source lists by theme, in several languages, and pulls the data back.', note:'Collecting in parallel.' },
+    { view:'buckets', h:'Returns are classified',
+      sub:'Everything that comes back is sorted into what it actually tells you.', note:'Sorting returns.' },
+    { view:'buckets', h:'Each finding is graded',
+      sub:'Confirmed, probable or possible. Nothing is dressed up as certain.', note:'Grading by confidence.' },
+    { view:'analyze', h:'Findings are cross-checked',
+      sub:'Each claim is weighed against independent sources before it is allowed to stand.', note:'Analyzing.' },
+    { view:'human', h:'A human reviews the file',
+      sub:'Intelligence professionals review the relevance of what was found, and sign off.', note:'Human in the loop.' },
+    { view:'report', h:'The graded brief goes out',
+      sub:'One sourced, graded file. The product you receive.', note:'Delivered.' },
+  ];
+
+  // build theme chips around the core
+  let themeNodes = [];
+  function buildThemes(){
+    THEMES.forEach((t,i) => {
+      const el=document.createElement('div'); el.className='theme';
+      el.innerHTML='<span class="tdot"></span>'+t;
+      field.appendChild(el); themeNodes.push(el);
+    });
+    layoutThemes();
+  }
+  function layoutThemes(){
+    const w=field.clientWidth, h=field.clientHeight, cx=w/2, cy=h/2;
+    const rx=Math.min(w*0.42, 360), ry=h*0.40;
+    themeNodes.forEach((el,i) => {
+      const a = (-Math.PI/2) + (i/THEMES.length)*Math.PI*2;
+      el.style.left=(cx+Math.cos(a)*rx)+'px';
+      el.style.top =(cy+Math.sin(a)*ry)+'px';
+      el.dataset.x=(cx+Math.cos(a)*rx); el.dataset.y=(cy+Math.sin(a)*ry);
+    });
+  }
+  window.addEventListener('resize', layoutThemes);
+
+  let token=0, timers=[];
+  const clearAll=()=>{ timers.forEach(clearTimeout); timers=[]; };
+  const after=(ms,fn)=>timers.push(setTimeout(fn,ms));
+
+  function setSteps(active){
+    steps.forEach((s,i)=>{ s.classList.toggle('is-active',i===active); s.classList.toggle('is-done',i<active); });
+  }
+  function showView(name){ Object.keys(views).forEach(k=>views[k].classList.toggle('show',k===name)); }
+
+  function cycleLangs(my){
+    let i=0;
+    const tick=()=>{ if(my!==token) return;
+      langsEl.innerHTML = LANGS.map((l,k)=> k===i?'<b>'+l+'</b>':l ).join(' ');
+      i=(i+1)%LANGS.length; after(420,tick);
+    };
+    tick();
+  }
+  function fireTheme(el, my, delay){
+    after(delay, ()=>{ if(my!==token) return;
+      el.classList.add('lit');
+      const x=+el.dataset.x, y=+el.dataset.y;
+      const w=field.clientWidth, h=field.clientHeight, cx=w/2, cy=h/2;
+      // connector line
+      const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('class','ln');
+      path.setAttribute('d',`M${cx} ${cy} L${x} ${y}`);
+      linksSvg.appendChild(path);
+      requestAnimationFrame(()=>path.classList.add('on'));
+      // outbound + return packet
+      const pk=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      pk.setAttribute('class','pkt'); pk.setAttribute('cx',cx); pk.setAttribute('cy',cy);
+      linksSvg.appendChild(pk);
+      animatePacket(pk, cx,cy, x,y, my, ()=>{ if(my!==token) return; el.classList.add('hit');
+        snEl.textContent = Math.min(SRC_TARGET, (+snEl.textContent||0) + Math.round(2+Math.random()*4));
+      });
+    });
+  }
+  function animatePacket(pk, x0,y0, x1,y1, my, onArrive){
+    const t0=performance.now(), dur=520;
+    const frame=now=>{ if(my!==token){ pk.remove(); return; }
+      let p=Math.min(1,(now-t0)/dur);
+      const cx=x0+(x1-x0)*p, cy=y0+(y1-y0)*p;
+      pk.setAttribute('cx',cx); pk.setAttribute('cy',cy);
+      if(p<1) requestAnimationFrame(frame);
+      else { onArrive&&onArrive();
+        // return trip
+        const r0=performance.now(), rdur=460;
+        const ret=n2=>{ if(my!==token){ pk.remove(); return; }
+          let q=Math.min(1,(n2-r0)/rdur);
+          pk.setAttribute('cx',x1+(x0-x1)*q); pk.setAttribute('cy',y1+(y0-y1)*q);
+          if(q<1) requestAnimationFrame(ret); else pk.remove();
+        }; requestAnimationFrame(ret);
+      }
+    };
+    requestAnimationFrame(frame);
+  }
+
+  function resetField(){
+    themeNodes.forEach(el=>el.classList.remove('lit','hit'));
+    linksSvg.innerHTML=''; snEl.textContent='0'; tnEl.textContent='0'; langsEl.innerHTML='';
+  }
+
+  function applyBeat(i, animate){
+    const b=BEATS[i]; const my=++token;
+    setSteps(i); showView(b.view);
+    hEl.textContent=b.h.replace(/&amp;/g,'&'); subEl.innerHTML=b.sub;
+    liveEl.textContent=b.h+'. '+b.sub.replace(/<[^>]+>/g,'');
+
+    if(b.view==='field'){
+      resetField();
+      if(i===0){ tnEl.textContent='0'; }
+      else {
+        // collect beat: light themes + round-trip packets + langs
+        if(animate && !reduce.matches){
+          cycleLangs(my);
+          themeNodes.forEach((el,k)=>{ fireTheme(el,my,k*150); });
+          let c=0; const ti=setInterval(()=>{ if(my!==token){clearInterval(ti);return;} c=Math.min(THEMES.length,c+1); tnEl.textContent=c; if(c>=THEMES.length) clearInterval(ti); },150);
+        } else {
+          themeNodes.forEach(el=>el.classList.add('lit','hit'));
+          tnEl.textContent=THEMES.length; snEl.textContent=SRC_TARGET; langsEl.innerHTML=LANGS.map((l,k)=>k===0?'<b>'+l+'</b>':l).join(' ');
+        }
+      }
+    }
+    if(b.view==='analyze'){
+      synth.classList.remove('go');
+      if(animate && !reduce.matches){
+        requestAnimationFrame(()=>synth.classList.add('go'));
+        let v=0; const ai=setInterval(()=>{ if(my!==token){clearInterval(ai);return;} v=Math.min(82,v+3); synEl.textContent=v; if(v>=82)clearInterval(ai); },28);
+      } else { synth.classList.add('go'); synEl.textContent='82'; }
+    }
+  }
+
+  // guided autorun on scroll into view
+  let cur=0, autoTimer=null;
+  function run(){
+    clearAll(); if(autoTimer) clearTimeout(autoTimer);
+    cur=0; applyBeat(0,true);
+    const DUR=[1600,3200,2200,2200,2400,2600,2000];
+    let t=0;
+    const schedule=i=>{ autoTimer=setTimeout(()=>{ cur=i; applyBeat(i,true); if(i<BEATS.length-1) schedule(i+1); }, DUR[i-1]); };
+    if(!reduce.matches){ t=DUR[0]; schedule(1); }
+  }
+
+  steps.forEach(s=> s.addEventListener('click', ()=>{ if(autoTimer)clearTimeout(autoTimer); cur=+s.dataset.go; applyBeat(cur,true); }));
+
+  buildThemes();
+  // initial static state
+  applyBeat(0,false);
+
+  let started=false;
+  const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting && !started){ started=true; layoutThemes(); run(); } }); }, {threshold:.35});
+  io.observe(root);
+})();
+</script>
+</body>
+</html>
