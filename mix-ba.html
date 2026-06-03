@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zwire · Private intelligence cabinet</title>
+<meta name="description" content="Zwire is a private intelligence cabinet. We research what is publicly available about a person or company, cross-check every finding, and grade it for confidence.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0d11;            /* deep slate base */
+    --ink-2:#0f1217;          /* lifted surface */
+    --line:rgba(233,236,240,.09);
+    --line-2:rgba(233,236,240,.16);
+    --fg:#e9ecf0;             /* primary text */
+    --fg-2:#9aa3ad;           /* secondary text */
+    --fg-3:#6b7480;           /* faint */
+    --accent:#86b8c9;         /* ice-blue signal, used sparingly */
+    --accent-dim:rgba(134,184,201,.16);
+    --serif:'Newsreader',Georgia,'Times New Roman',serif;
+    --sans:'Inter',system-ui,-apple-system,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,'SF Mono',monospace;
+    --maxw:1120px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{
+    background:var(--ink);color:var(--fg);font-family:var(--sans);
+    font-size:16px;line-height:1.65;letter-spacing:.005em;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  body::before{ /* extremely subtle top vignette */
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(120% 60% at 50% -10%, rgba(134,184,201,.05), transparent 60%);
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(20px,5vw,48px);position:relative;z-index:1}
+  .mono{font-family:var(--mono);font-weight:400}
+  .kicker{
+    font-family:var(--mono);font-size:.7rem;font-weight:500;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--fg-3);
+  }
+  .kicker .i{color:var(--accent)}
+
+  /* skip link */
+  .skip{position:absolute;left:-999px;top:0}
+  .skip:focus{left:16px;top:16px;z-index:50;background:var(--ink-2);padding:8px 14px;border:1px solid var(--line-2);border-radius:6px}
+
+  /* ---------- header ---------- */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:30;
+    background:rgba(11,13,17,.72);backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;gap:28px;height:64px}
+  .brand{font-family:var(--serif);font-size:1.28rem;font-weight:500;letter-spacing:.01em;display:flex;align-items:baseline;gap:.05em}
+  .brand .dot{color:var(--accent)}
+  .nav .spacer{flex:1}
+  .nav nav{display:flex;gap:26px}
+  .nav nav a{font-size:.86rem;color:var(--fg-2);transition:color .2s}
+  .nav nav a:hover{color:var(--fg)}
+  .status{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3)}
+  .status .led{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(134,184,201,.5);animation:pulse 2.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(134,184,201,.45)}70%{box-shadow:0 0 0 6px rgba(134,184,201,0)}100%{box-shadow:0 0 0 0 rgba(134,184,201,0)}}
+  .btn{
+    font-family:var(--sans);font-size:.82rem;font-weight:500;color:var(--fg);
+    border:1px solid var(--line-2);border-radius:999px;padding:9px 18px;
+    transition:border-color .2s,background .2s;white-space:nowrap;
+  }
+  .btn:hover{border-color:var(--accent);background:var(--accent-dim)}
+  .btn.solid{background:var(--fg);color:var(--ink);border-color:var(--fg)}
+  .btn.solid:hover{background:var(--accent);border-color:var(--accent);color:var(--ink)}
+
+  /* ---------- section frame ---------- */
+  section{padding-block:clamp(64px,11vw,128px);border-top:1px solid var(--line);position:relative;z-index:1}
+  .seclabel{display:flex;align-items:center;gap:14px;margin-bottom:38px}
+  .seclabel .num{font-family:var(--mono);font-size:.72rem;color:var(--accent);letter-spacing:.1em}
+  .seclabel .ttl{font-family:var(--mono);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--fg-3)}
+  .seclabel .rule{flex:1;height:1px;background:var(--line)}
+  h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.7rem,4.2vw,2.7rem);line-height:1.1;letter-spacing:-.01em}
+  h2 em{font-style:italic;color:var(--accent)}
+  .lede{max-width:60ch;color:var(--fg-2);font-size:1.05rem;margin-top:18px}
+
+  /* ---------- hero ---------- */
+  .hero{padding-top:clamp(120px,20vw,180px);padding-bottom:clamp(56px,9vw,96px);border-top:none}
+  .hero .kicker{margin-bottom:26px}
+  .hero h1{
+    font-family:var(--serif);font-weight:300;letter-spacing:-.015em;
+    font-size:clamp(2.4rem,7.4vw,4.5rem);line-height:1.04;max-width:16ch;
+  }
+  .hero p.sub{max-width:54ch;color:var(--fg-2);font-size:clamp(1.05rem,2.2vw,1.22rem);margin-top:28px;line-height:1.6}
+  .hero .cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:40px}
+  .hero .cta a{font-size:.9rem}
+  .link-arrow{display:inline-flex;align-items:center;gap:8px;color:var(--fg);border-bottom:1px solid var(--line-2);padding:9px 2px 9px 0;transition:border-color .2s,color .2s}
+  .link-arrow:hover{border-color:var(--accent);color:var(--accent)}
+  .reassure{margin-top:34px;font-family:var(--mono);font-size:.74rem;letter-spacing:.04em;color:var(--fg-3);display:flex;align-items:center;gap:10px}
+  .reassure .bar{width:24px;height:1px;background:var(--accent);opacity:.7}
+
+  /* ---------- standard (4 pillars) ---------- */
+  .pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .pillar{padding:30px 26px;border-right:1px solid var(--line)}
+  .pillar:last-child{border-right:none}
+  .pillar .pk{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:16px}
+  .pillar h3{font-family:var(--serif);font-weight:500;font-size:1.16rem;margin-bottom:10px;letter-spacing:.01em}
+  .pillar p{font-size:.92rem;color:var(--fg-2);line-height:1.55}
+
+  /* ---------- method ---------- */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:8px}
+  .step{padding:24px 22px 24px 0;border-top:1px solid var(--line-2);margin-right:22px;position:relative}
+  .step .sn{font-family:var(--mono);font-size:.72rem;color:var(--accent);letter-spacing:.1em}
+  .step .st{font-family:var(--serif);font-size:1.12rem;margin-top:12px;font-weight:500}
+  .step p{font-size:.88rem;color:var(--fg-2);margin-top:8px;line-height:1.5}
+  .grades{margin-top:54px;border:1px solid var(--line);border-radius:10px;padding:26px 28px}
+  .grades .gl{font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fg-3);margin-bottom:20px}
+  .grow{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .grade{display:flex;flex-direction:column;gap:10px}
+  .grade .track{height:3px;border-radius:3px;background:var(--accent)}
+  .grade .gn{font-family:var(--mono);font-size:.82rem;color:var(--fg);letter-spacing:.02em}
+  .grade .gd{font-size:.8rem;color:var(--fg-3)}
+  .g1 .track{opacity:1}
+  .g2 .track{opacity:.66}
+  .g3 .track{opacity:.4}
+  .g4 .track{opacity:.2}
+
+  /* ---------- offers ---------- */
+  .offers{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .offer{padding:34px 30px;border-right:1px solid var(--line);display:flex;flex-direction:column}
+  .offer:last-child{border-right:none}
+  .offer.reco{background:linear-gradient(180deg,var(--accent-dim),transparent 38%)}
+  .offer .tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);height:14px;margin-bottom:18px}
+  .offer h3{font-family:var(--serif);font-weight:500;font-size:1.45rem;letter-spacing:.01em}
+  .offer .price{font-family:var(--mono);font-size:1.7rem;color:var(--fg);margin-top:14px;font-weight:500}
+  .offer .price .from{font-size:.7rem;color:var(--fg-3);letter-spacing:.12em;text-transform:uppercase;margin-right:6px;vertical-align:middle}
+  .offer .pitch{font-size:.95rem;color:var(--fg-2);margin-top:16px;line-height:1.55;min-height:3em}
+  .offer ul{list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:12px;flex:1}
+  .offer li{font-size:.88rem;color:var(--fg);padding-left:18px;position:relative;line-height:1.45}
+  .offer li::before{content:"";position:absolute;left:0;top:.62em;width:9px;height:1px;background:var(--accent)}
+  .offer .req{margin-top:28px}
+  .offer .req a{font-size:.84rem;width:100%;text-align:center;display:block}
+  .offers-note{margin-top:22px;font-family:var(--mono);font-size:.74rem;color:var(--fg-3);letter-spacing:.03em;display:flex;gap:10px;align-items:center}
+  .offers-note .bar{width:24px;height:1px;background:var(--accent);opacity:.7}
+
+  /* ---------- contact ---------- */
+  .channels{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:6px}
+  .chan{display:flex;align-items:center;gap:20px;padding:26px 30px;border-bottom:1px solid var(--line);transition:background .2s}
+  .chan:last-child{border-bottom:none}
+  .chan:hover{background:var(--ink-2)}
+  .chan .ck{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3);width:110px;flex-shrink:0}
+  .chan .cv{font-family:var(--serif);font-size:1.15rem;color:var(--fg)}
+  .chan .ar{margin-left:auto;color:var(--accent);font-family:var(--mono)}
+  .contact-foot{margin-top:24px;color:var(--fg-3);font-size:.9rem}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding-block:54px}
+  footer .disc{max-width:78ch;color:var(--fg-3);font-size:.82rem;line-height:1.7}
+  footer .meta{display:flex;justify-content:space-between;align-items:center;margin-top:30px;flex-wrap:wrap;gap:14px}
+  footer .meta .brand{font-size:1.05rem}
+  footer .meta .cp{font-family:var(--mono);font-size:.72rem;color:var(--fg-3);letter-spacing:.08em}
+
+  /* ---------- responsive ---------- */
+  @media(max-width:900px){
+    .pillars,.offers{grid-template-columns:1fr}
+    .pillar{border-right:none;border-bottom:1px solid var(--line)}
+    .pillar:last-child{border-bottom:none}
+    .offer{border-right:none;border-bottom:1px solid var(--line)}
+    .offer:last-child{border-bottom:none}
+    .steps{grid-template-columns:1fr 1fr}
+    .grow{grid-template-columns:1fr 1fr;gap:22px}
+  }
+  @media(max-width:620px){
+    body{font-size:15px}
+    .nav nav{display:none}
+    .nav{gap:14px}
+    .status{display:none}
+    .steps{grid-template-columns:1fr}
+    .step{margin-right:0}
+    .grow{grid-template-columns:1fr}
+    .chan{flex-wrap:wrap;gap:6px 16px}
+    .chan .ck{width:auto}
+    .chan .ar{margin-left:0}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+
+<header>
+  <div class="wrap nav">
+    <span class="brand">Zwire<span class="dot">.</span></span>
+    <div class="spacer"></div>
+    <nav>
+      <a href="#standard">How it works</a>
+      <a href="#offers">Offers &middot; Pricing</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <span class="status"><span class="led"></span>cabinet&nbsp;&middot;&nbsp;live</span>
+    <a class="btn solid" href="#contact">Request a brief</a>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="kicker">Private intelligence <span class="i">&middot;</span> graded for confidence</div>
+      <h1>Know what the open world already knows.</h1>
+      <p class="sub">We research what is publicly available about a person or company, cross-check every finding, and tell you how certain we are.</p>
+      <div class="cta">
+        <a class="btn solid" href="#contact">Request a brief</a>
+        <a class="link-arrow" href="#standard">See how it works&nbsp;&rarr;</a>
+      </div>
+      <div class="reassure"><span class="bar"></span>No account, no upfront payment &middot; you review every draft before it is sent.</div>
+    </div>
+  </section>
+
+  <!-- STANDARD -->
+  <section id="standard">
+    <div class="wrap">
+      <div class="seclabel"><span class="num">01</span><span class="ttl">The standard behind every brief</span><span class="rule"></span></div>
+      <div class="pillars">
+        <div class="pillar">
+          <div class="pk">Sourcing</div>
+          <h3>Lawful sourcing</h3>
+          <p>Public and licensed sources only. We never hack, impersonate, or use unlawfully obtained data.</p>
+        </div>
+        <div class="pillar">
+          <div class="pk">Review</div>
+          <h3>Human-reviewed</h3>
+          <p>Every brief is checked and signed off by a human analyst, not a model.</p>
+        </div>
+        <div class="pillar">
+          <div class="pk">Grading</div>
+          <h3>Graded for confidence</h3>
+          <p>Each finding carries a grade &mdash; Confirmed, Probable, Possible or Unverified.</p>
+        </div>
+        <div class="pillar">
+          <div class="pk">Handling</div>
+          <h3>One recipient</h3>
+          <p>Delivered to a single recipient. We never reveal a client or a confidential source.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- METHOD -->
+  <section id="method">
+    <div class="wrap">
+      <div class="seclabel"><span class="num">02</span><span class="ttl">How we check every finding</span><span class="rule"></span></div>
+      <h2>Every brief runs the <em>same cycle.</em></h2>
+      <p class="lede">Lawful public and licensed sources, cross-checked across independent sources, each finding graded for confidence, then reviewed by a human analyst before it reaches you.</p>
+      <div class="steps">
+        <div class="step"><div class="sn">01</div><div class="st">Source</div><p>Lawful public and licensed sources, gathered in scope.</p></div>
+        <div class="step"><div class="sn">02</div><div class="st">Cross-check</div><p>Each claim corroborated across independent sources.</p></div>
+        <div class="step"><div class="sn">03</div><div class="st">Grade</div><p>Every finding assigned a confidence grade.</p></div>
+        <div class="step"><div class="sn">04</div><div class="st">Human sign-off</div><p>An analyst reviews and signs before delivery.</p></div>
+      </div>
+      <div class="grades">
+        <div class="gl">Every finding, graded</div>
+        <div class="grow">
+          <div class="grade g1"><div class="track"></div><div class="gn">Confirmed</div><div class="gd">Independently corroborated.</div></div>
+          <div class="grade g2"><div class="track"></div><div class="gn">Probable</div><div class="gd">Strongly supported, not certain.</div></div>
+          <div class="grade g3"><div class="track"></div><div class="gn">Possible</div><div class="gd">Plausible, limited support.</div></div>
+          <div class="grade g4"><div class="track"></div><div class="gn">Unverified</div><div class="gd">Noted, not yet checked.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OFFERS -->
+  <section id="offers">
+    <div class="wrap">
+      <div class="seclabel"><span class="num">03</span><span class="ttl">Three depths, one standard</span><span class="rule"></span></div>
+      <div class="offers">
+        <div class="offer">
+          <div class="tag"></div>
+          <h3>Quick</h3>
+          <div class="price">$200</div>
+          <p class="pitch">A sourced, confidence-graded read on a person, a company, or your own public exposure &mdash; within 10 hours.</p>
+          <ul>
+            <li>Concise sourced report</li>
+            <li>Key findings, ranked</li>
+            <li>Confidence grade per finding</li>
+            <li>Human-reviewed within 10 hours</li>
+          </ul>
+          <div class="req"><a class="btn" href="#contact">Request Quick</a></div>
+        </div>
+        <div class="offer reco">
+          <div class="tag">Recommended</div>
+          <h3>Full Report</h3>
+          <div class="price">$1,000</div>
+          <p class="pitch">A monitored investigation, not a snapshot. A dedicated analyst owns your file and answers the questions your decision turns on.</p>
+          <ul>
+            <li>A dedicated analyst owns your file</li>
+            <li>Full briefing document</li>
+            <li>Source-by-source provenance</li>
+            <li>Confidence grade per finding</li>
+            <li>One revision included</li>
+          </ul>
+          <div class="req"><a class="btn solid" href="#contact">Request Full Report</a></div>
+        </div>
+        <div class="offer">
+          <div class="tag"></div>
+          <h3>Business</h3>
+          <div class="price"><span class="from">from</span>$3,500</div>
+          <p class="pitch">When the matter is sensitive and for one set of eyes. Scoped engagements for legal, corporate and high-sensitivity matters.</p>
+          <ul>
+            <li>Bespoke brief plus addenda</li>
+            <li>Scope, fee and timeline set privately</li>
+            <li>A single recipient, agreed up front</li>
+            <li>Strict handling controls</li>
+          </ul>
+          <div class="req"><a class="btn" href="#contact">Request Business</a></div>
+        </div>
+      </div>
+      <div class="offers-note"><span class="bar"></span>No upfront payment &middot; scope and fee agreed in private before any work begins.</div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="seclabel"><span class="num">04</span><span class="ttl">Reach the cabinet</span><span class="rule"></span></div>
+      <h2>Every channel reaches the <em>cabinet directly.</em></h2>
+      <div class="channels">
+        <a class="chan" href="mailto:contact@zwire.pro"><span class="ck">Email</span><span class="cv">contact@zwire.pro</span><span class="ar">&rarr;</span></a>
+        <a class="chan" href="#"><span class="ck">Telegram</span><span class="cv">@placeholder</span><span class="ar">&rarr;</span></a>
+        <a class="chan" href="mailto:zwire@protonmail.com"><span class="ck">Proton</span><span class="cv">zwire@protonmail.com</span><span class="ar">&rarr;</span></a>
+      </div>
+      <p class="contact-foot">Reply within 24 hours.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="disc">Zwire is a private intelligence cabinet. We draw exclusively from lawful public and licensed sources. Every finding is sourced and graded for confidence, and delivered to a single recipient. We never hack, impersonate, or use unlawfully obtained data, and we never reveal a client or a confidential source. Briefs are decision-support, not legal, financial or professional advice; confidence grades express analytical assessment, not certainty. Operating entity and registration available on request.</p>
+    <div class="meta">
+      <span class="brand">Zwire<span class="dot" style="color:var(--accent)">.</span></span>
+      <span class="cp">&copy; 2026 Zwire &middot; mix B+A preview</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
