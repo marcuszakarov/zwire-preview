@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Five Phuket — Business Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f1418;--panel:#161c21;--line:rgba(255,255,255,.09);--line-2:rgba(255,255,255,.16);
+    --ink:#eef1f0;--ink-2:#9fa8a6;--ink-3:#6b7572;
+    --accent:#4cb89a;--accent-dim:rgba(76,184,154,.12);--warn:#d8956a;
+    --serif:'Newsreader',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--mono:'IBM Plex Mono',monospace;
+    --maxw:880px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(20px,5vw,40px)}
+  a{color:var(--accent)}
+  .kk{font-family:var(--mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3)}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(2.1rem,6vw,3rem);line-height:1.05;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-weight:500;font-size:clamp(1.4rem,3.5vw,1.9rem);margin-bottom:6px;letter-spacing:-.01em}
+  h3{font-family:var(--sans);font-weight:600;font-size:1rem;margin:22px 0 8px}
+  p{color:var(--ink-2);margin:10px 0;max-width:68ch}
+  p b,li b{color:var(--ink);font-weight:600}
+  ul{margin:10px 0 10px 4px;list-style:none}
+  li{color:var(--ink-2);padding-left:18px;position:relative;margin:7px 0;max-width:66ch}
+  li::before{content:"";position:absolute;left:0;top:.7em;width:7px;height:1px;background:var(--accent)}
+  header.cover{padding:clamp(54px,12vw,90px) 0 30px;border-bottom:1px solid var(--line)}
+  header.cover .sub{font-family:var(--serif);font-size:clamp(1.1rem,2.6vw,1.4rem);color:var(--ink-2);margin-top:16px;max-width:50ch}
+  header.cover .stamp{margin-top:24px;font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;color:var(--ink-3)}
+  section{padding:38px 0;border-bottom:1px solid var(--line)}
+  .secnum{font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;color:var(--accent);margin-bottom:10px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:26px 0}
+  .kpi{background:var(--bg);padding:18px 16px}
+  .kpi .n{font-family:var(--mono);font-size:1.35rem;color:var(--ink);font-weight:500}
+  .kpi .n .u{font-size:.7rem;color:var(--ink-3);margin-left:3px}
+  .kpi .l{font-size:.74rem;color:var(--ink-3);margin-top:5px;line-height:1.35}
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:.92rem}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+  th{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+  td.num,th.num{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+  tr.total td{border-top:1px solid var(--line-2);border-bottom:none;color:var(--ink);font-weight:600}
+  tr.total td.num{color:var(--accent)}
+  .callout{border:1px solid var(--line);border-left:2px solid var(--accent);background:var(--panel);border-radius:8px;padding:18px 20px;margin:22px 0}
+  .callout .ct{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+  .callout.warn{border-left-color:var(--warn)}.callout.warn .ct{color:var(--warn)}
+  .lev{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:18px 0}
+  .lev .c{border:1px solid var(--line);border-radius:8px;padding:16px}
+  .lev .c .h{font-family:var(--serif);font-size:1.1rem;margin-bottom:6px}
+  .lev .c p{font-size:.86rem;margin:0}
+  footer{padding:34px 0 60px;color:var(--ink-3);font-size:.8rem}
+  @media(max-width:680px){.kpis{grid-template-columns:1fr 1fr}.lev{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="cover"><div class="wrap">
+  <div class="kk">Business plan · confidentiel · brouillon v1</div>
+  <h1>Five Phuket</h1>
+  <p class="sub">Un centre de foot à 5 façon « Le Five », sur 3 000 m² à Rawai, Phuket. Modèle d'exploitation : location de créneaux + bar/F&amp;B + ligues &amp; events.</p>
+  <div class="stamp">Rédigé par Zwire · 2026-06-03 · chiffres en hypothèses, à affiner avec Z</div>
+</div></header>
+
+<section><div class="wrap">
+  <div class="secnum">01 — Synthèse</div>
+  <h2>L'essentiel</h2>
+  <p><b>Le concept tient, mais c'est un business capitalistique à rendement modéré, pas un coup rapide.</b> Le résultat dépend de trois leviers : le taux d'occupation des terrains, la dépense annexe (bar/F&amp;B), et le coût du foncier. La Coupe du Monde est un accélérateur de lancement marketing, pas la thèse d'investissement.</p>
+  <div class="kpis">
+    <div class="kpi"><div class="n">~23 M<span class="u">THB</span></div><div class="l">Capex (hors terrain, déjà sécurisé) ≈ 590 k€</div></div>
+    <div class="kpi"><div class="n">~12,7 M<span class="u">THB</span></div><div class="l">CA an 3 (maturité)</div></div>
+    <div class="kpi"><div class="n">~30<span class="u">%</span></div><div class="l">Marge EBITDA an 3 (~3,8 M THB)</div></div>
+    <div class="kpi"><div class="n">~6–7<span class="u">ans</span></div><div class="l">Retour sur capex (plus vite si terrain gratuit)</div></div>
+  </div>
+  <p>Décision en une ligne : <b>feu vert conditionnel</b> — viable comme actif d'exploitation patrimonial si (1) le terrain est réellement gratuit/peu cher, (2) on atteint 55 %+ d'occupation via les ligues, le corporate et l'académie (pas seulement le walk-in), (3) le bar est exploité sérieusement (~30 % du CA), (4) le montage légal thaï est propre. Sinon, ça reste à l'équilibre.</p>
+</div></section>
+
+<section><div class="wrap">
+  <div class="secnum">02 — Concept &amp; format</div>
+  <h2>Ce qu'on construit sur 3 000 m²</h2>
+  <table>
+    <tr><th>Poste</th><th class="num">Surface</th><th>Note</th></tr>
+    <tr><td>3 terrains de foot à 5, couverts</td><td class="num">~1 500 m²</td><td>~500 m² / court (aire + dégagements)</td></tr>
+    <tr><td>Clubhouse, bar, vestiaires, WC</td><td class="num">~250 m²</td><td>cœur F&amp;B + écrans</td></tr>
+    <tr><td>Parking + circulation + retraits</td><td class="num">~1 250 m²</td><td>~40 voitures + motos</td></tr>
+    <tr class="total"><td>Total</td><td class="num">3 000 m²</td><td></td></tr>
+  </table>
+  <p><b>Couvert, côtés ouverts</b> (canopée) : c'est le bon compromis pour Phuket — protège du soleil et de la pluie sans le coût ni la chaleur d'un indoor climatisé. Le jeu se concentre en soirée (chaleur), le toit sauve la saison des pluies (mai–oct).</p>
+  <p>Variante <b>allégée (2 courts, canopée plus légère)</b> : capex ~14–15 M THB — utile si on veut tester avant d'étendre.</p>
+</div></section>
+
+<section><div class="wrap">
+  <div class="secnum">03 — Marché</div>
+  <h2>Phuket / Rawai</h2>
+  <h3>Demande</h3>
+  <ul>
+    <li><b>Expats &amp; résidents</b> : Rawai/Chalong = sud de l'île, forte communauté expat (européens, russes), base régulière toute l'année — c'est elle qui doit porter la basse saison.</li>
+    <li><b>Thaïs locaux</b> : le futsal/foot à 5 est très populaire en Thaïlande ; demande de ligues et de créneaux réguliers.</li>
+    <li><b>Touristes</b> : pic nov–avr (saison sèche), groupes, anniversaires, events — bonus saisonnier, pas le socle.</li>
+    <li><b>Enfants / académie</b> : créneaux jour + week-end, récurrence et marge.</li>
+    <li><b>Corporate</b> : tournois d'entreprises (hôtels, écoles internationales) — créneaux pleins, peu sensibles au prix.</li>
+  </ul>
+  <h3>Concurrence</h3>
+  <p>Il existe déjà des terrains à Phuket (Football Island, Phuket Football 5s, terrains à Patong/Chalong/Phuket Town, un petit club à Rawai). Marché <b>actif mais pas saturé</b> — à l'inverse de la France, où plus de 30 centres indépendants ont fait faillite après 2011. L'avantage se gagne sur la localisation (sud), la qualité (couvert + bar) et l'animation (ligues).</p>
+  <div class="callout warn"><div class="ct">Leçon du marché français</div>Là où c'est saturé, le foot à 5 « pas rentable » vient toujours du même point : occupation insuffisante. Le terrain qui rapporte est celui qui est plein en heures creuses (jour) grâce aux ligues, académies et corporate — pas seulement plein le mardi soir.</div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="secnum">04 — Modèle économique</div>
+  <h2>D'où vient l'argent</h2>
+  <p>Cible à maturité : <b>~60 % location de terrains, ~30 % F&amp;B, ~10 % ligues/events/académie</b> — la répartition observée sur les gros centres. Le bar n'est pas un accessoire : c'est un tiers du chiffre.</p>
+  <h3>Tarifs (hypothèse, par court)</h3>
+  <table>
+    <tr><th>Créneau</th><th class="num">Prix / h</th><th>Plage</th></tr>
+    <tr><td>Heure pleine (soirs 17–23, week-end)</td><td class="num">1 200 THB</td><td>~54 h/sem</td></tr>
+    <tr><td>Heure creuse (journée semaine)</td><td class="num">600 THB</td><td>le reste</td></tr>
+  </table>
+  <p>Référence : Bangkok facture 1 500–2 000 THB/h le futsal ; Phuket se tient un cran en dessous hors prime tourisme. L'occupation est le vrai moteur : <b>il faut viser 55–60 %</b> des heures prime pour être rentable.</p>
+</div></section>
+
+<section><div class="wrap">
+  <div class="secnum">05 — Investissement (Capex)</div>
+  <h2>~23 M THB, hors terrain</h2>
+  <table>
+    <tr><th>Poste</th><th class="num">THB</th></tr>
+    <tr><td>Préparation site, drainage, fondations</td><td class="num">1 800 000</td></tr>
+    <tr><td>3 × gazon synthétique (gazon + sous-couche + traçage)</td><td class="num">3 000 000</td></tr>
+    <tr><td>Toiture canopée acier (~1 600 m²)</td><td class="num">6 000 000</td></tr>
+    <tr><td>Éclairage LED (3 courts)</td><td class="num">1 000 000</td></tr>
+    <tr><td>Clôtures, filets, buts, équipement</td><td class="num">1 200 000</td></tr>
+    <tr><td>Clubhouse, bar, vestiaires (~250 m²)</td><td class="num">4 000 000</td></tr>
+    <tr><td>Agencement bar/cuisine, mobilier, écrans (Coupe du Monde)</td><td class="num">2 000 000</td></tr>
+    <tr><td>Parking, paysage, signalétique</td><td class="num">1 200 000</td></tr>
+    <tr><td>Pro shop, système de réservation, marque &amp; lancement</td><td class="num">800 000</td></tr>
+    <tr><td>Contingence (~10 %)</td><td class="num">2 100 000</td></tr>
+    <tr class="total"><td>Total Capex</td><td class="num">23 100 000</td></tr>
+  </table>
+  <p>Le poste qui fait basculer le budget = <b>la toiture</b>. Une canopée 3 courts pèse ~6 M THB. La variante 2 courts descend l'ensemble vers ~14–15 M THB.</p>
+</div></section>
+
+<section><div class="wrap">
+  <div class="secnum">06 — Exploitation (Opex)</div>
+  <h2>~8,9 M THB / an à maturité</h2>
+  <table>
+    <tr><th>Poste</th><th class="num">THB / an</th></tr>
+    <tr><td>Loyer foncier (notionnel — nul si terrain apporté)</td><td class="num">1 500 000</td></tr>
+    <tr><td>Masse salariale (~9 personnes)</td><td class="num">3 000 000</td></tr>
+    <tr><td>Utilités (éclairage, eau, clim clubhouse)</td><td class="num">1 700 000</td></tr>
+    <tr><td>Coût matières F&amp;B (~35 % du CA bar)</td><td class="num">1 200 000</td></tr>
+    <tr><td>Marketing</td><td class="num">600 000</td></tr>
+    <tr><td>Maintenance terrain &amp; site</td><td class="num">400 000</td></tr>
+    <tr><td>Assurances, licences, admin, divers</td><td class="num">500 000</td></tr>
+    <tr class="total"><td>Total Opex</td><td class="num">8 900 000</td></tr>
+  </table>
+  <p>Si le terrain est <b>apporté</b> (pas de loyer), l'EBITDA gagne ~1,5 M THB/an et le retour se raccourcit nettement.</p>
+</div></section>
+
+<section><div class="wrap">
+  <div class="secnum">07 — Compte de résultat (3 ans)</div>
+  <h2>Montée en charge</h2>
+  <table>
+    <tr><th>THB</th><th class="num">An 1 (~40 %)</th><th class="num">An 2 (~50 %)</th><th class="num">An 3 (~58 %)</th></tr>
+    <tr><td>Location terrains</td><td class="num">4 000 000</td><td class="num">5 500 000</td><td class="num">6 500 000</td></tr>
+    <tr><td>F&amp;B / bar</td><td class="num">2 000 000</td><td class="num">3 000 000</td><td class="num">3 800 000</td></tr>
+    <tr><td>Ligues / events / académie</td><td class="num">1 000 000</td><td class="num">1 800 000</td><td class="num">2 400 000</td></tr>
+    <tr class="total"><td>Chiffre d'affaires</td><td class="num">7 000 000</td><td class="num">10 300 000</td><td class="num">12 700 000</td></tr>
+    <tr><td>Charges d'exploitation</td><td class="num">8 000 000</td><td class="num">8 500 000</td><td class="num">8 900 000</td></tr>
+    <tr class="total"><td>EBITDA</td><td class="num">−1 000 000</td><td class="num">+1 800 000</td><td class="num">+3 800 000</td></tr>
+  </table>
+  <p>An 1 = montée en charge, proche de l'équilibre voire légère perte (normal). À maturité : <b>marge EBITDA ~30 %</b>, retour sur capex ~6–7 ans (plus rapide si terrain gratuit). C'est un actif patrimonial qui tourne, pas un placement à rendement élevé.</p>
+</div></section>
+
+<section><div class="wrap">
+  <div class="secnum">08 — Les 3 leviers</div>
+  <h2>Ce qui fait ou défait le résultat</h2>
+  <div class="lev">
+    <div class="c"><div class="h">Occupation</div><p>+10 points d'occupation = ~+1,3 M THB de CA, presque tout en EBITDA. Se gagne en remplissant le JOUR (ligues, académie, corporate), pas le prime time.</p></div>
+    <div class="c"><div class="h">Dépense annexe</div><p>Le bar/F&amp;B doit viser ~30 % du CA. Un centre sans bar sérieux plafonne. Les écrans (sport en direct) tirent la consommation.</p></div>
+    <div class="c"><div class="h">Foncier</div><p>Terrain apporté = −1,5 M THB d'opex/an. C'est le facteur qui transforme un rendement « correct » en « bon ».</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="secnum">09 — Montage légal (Thaïlande)</div>
+  <h2>Le point qui structure tout</h2>
+  <ul>
+    <li><b>Société :</b> un étranger ne contrôle pas une société thaïe au-delà de 49 %. Route standard = <b>société à majorité thaïe (51/49)</b>, avec contrôle réel via actions de préférence, droits de vote, conventions et droits du gérant — jamais un nominee de paille (risque pénal).</li>
+    <li><b>BOI :</b> une promotion BOI permettrait 100 % étranger et certains droits fonciers. À <b>vérifier</b> : les installations sportives ne sont pas garanties éligibles — à confirmer auprès du Board of Investment.</li>
+    <li><b>Foncier :</b> un étranger ne possède pas de terrain. Si tu « as » les 3 000 m², confirmer le véhicule : <b>bail enregistré 30 ans (renouvelable 30+30)</b> ou détention via la société thaïe.</li>
+    <li><b>Licences :</b> enregistrement société, permis de construire, <b>licence d'alcool</b> (le bar), licence événementiel/sonore si tournois, signalétique.</li>
+  </ul>
+  <div class="callout"><div class="ct">Recommandation</div>Un avocat d'affaires thaï dès le départ. C'est la couche qui peut tuer le projet si elle est bâclée — et celle qui, bien faite, le sécurise pour 30 ans.</div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="secnum">10 — Calendrier &amp; Coupe du Monde</div>
+  <h2>Réconcilier l'échéance</h2>
+  <div class="callout warn"><div class="ct">Réalité</div>La Coupe du Monde 2026 se joue du 11 juin au 19 juillet 2026 — soit maintenant. Impossible de construire et d'ouvrir le centre avant. On ne peut pas tenir « un mois avant ».</div>
+  <h3>Proposition de phasage</h3>
+  <ul>
+    <li><b>Phase 0 — pop-up Coupe du Monde (optionnel, immédiat) :</b> si une surface du terrain est utilisable vite, un <b>bar + écrans géants + un court jouable</b> sous tente pour capter la ferveur, lancer la marque et bâtir le fichier clients avant les travaux. Petit capex, gros effet de notoriété.</li>
+    <li><b>Phase 1 — construction (~6–9 mois) :</b> permis (1–2 mois) + chantier (4–6 mois) → ouverture cible <b>novembre–décembre 2026</b> : saison sèche + pic touristique, le meilleur moment pour ouvrir.</li>
+    <li><b>Phase 2 — montée en charge :</b> ligues, académie, corporate, partenariats hôtels/écoles internationales.</li>
+  </ul>
+  <p>Si tu tiens à un ancrage « événement foot » pour le lancement, on cale l'ouverture sur la reprise des grands championnats (août) ou la haute saison — l'essentiel est d'ouvrir en saison sèche.</p>
+</div></section>
+
+<section><div class="wrap">
+  <div class="secnum">11 — Risques</div>
+  <h2>À tenir à l'œil</h2>
+  <ul>
+    <li><b>Montage foncier/société</b> — le risque légal n°1 (nominee, bail mal ficelé). Mitigation : avocat thaï, structure propre dès J0.</li>
+    <li><b>Occupation insuffisante</b> — le tueur classique. Mitigation : vendre des ligues et du corporate AVANT d'ouvrir (précommercialisation).</li>
+    <li><b>Saisonnalité</b> — creux mai–oct. Mitigation : socle expat/local + toit (jeu sous la pluie) + ligues annuelles.</li>
+    <li><b>Dépassement chantier</b> — surtout la toiture. Mitigation : devis fermes, contingence 10 %, variante 2 courts.</li>
+    <li><b>Chaleur</b> — jeu concentré le soir. Mitigation : ventilation, brumisation, créneaux jour réservés aux enfants/seniors.</li>
+  </ul>
+</div></section>
+
+<section><div class="wrap">
+  <div class="secnum">12 — Verdict</div>
+  <h2>Go conditionnel</h2>
+  <p>Projet <b>sain et faisable</b>, à condition de le traiter pour ce qu'il est : un <b>actif d'exploitation patrimonial</b> (retour ~6–7 ans, EBITDA ~30 % à maturité), pas un placement à rendement rapide. Les quatre conditions de réussite : terrain peu cher/apporté · occupation 55 %+ tirée par ligues/corporate/académie · bar exploité sérieusement · montage légal propre. La Coupe du Monde sert le lancement, pas le modèle.</p>
+  <p>Prochaine étape suggérée : tu valides/corriges les hypothèses (tarifs, format 2 vs 3 courts, terrain apporté ou loué, montage société), et je passe à un <b>modèle financier détaillé mois par mois</b> + un plan de précommercialisation des ligues.</p>
+</div></section>
+
+<footer><div class="wrap">
+  Five Phuket · business plan v1 (brouillon) · Zwire · 2026-06-03. Chiffres en hypothèses de cadrage, à affiner. Document interne, non destiné à des tiers.
+</div></footer>
+
+</body>
+</html>
