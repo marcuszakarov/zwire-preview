@@ -27,6 +27,15 @@
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(134,184,201,.45)}70%{box-shadow:0 0 0 6px rgba(134,184,201,0)}100%{box-shadow:0 0 0 0 rgba(134,184,201,0)}}
   .led{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(134,184,201,.5);animation:pulse 2.6s infinite;flex-shrink:0}
 
+  /* ---- preview placeholder system (removed at go-live) ---- */
+  .nav nav a.active{color:var(--accent)}
+  .pvbar{position:fixed;left:0;bottom:0;z-index:40;display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3);background:rgba(11,13,17,.86);backdrop-filter:blur(8px);border-top:1px solid var(--line-2);border-right:1px solid var(--line-2);border-top-right-radius:8px;padding:8px 13px}
+  .pvbar .ld{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0}
+  .stub{position:relative}
+  .stub::after{content:"stub";font-family:var(--mono);font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);position:absolute;top:-8px;right:-5px;background:var(--ink);padding:1px 4px;border:1px solid rgba(134,184,201,.45);border-radius:4px;line-height:1.5;pointer-events:none}
+  .chan.stubrow{padding-left:16px;border-left:2px dashed rgba(134,184,201,.3)}
+  .totag{margin-left:auto;font-family:var(--mono);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);border:1px dashed rgba(134,184,201,.4);border-radius:4px;padding:2px 7px;white-space:nowrap}
+
   .skip{position:absolute;left:-999px}.skip:focus{left:16px;top:16px;z-index:50;background:var(--ink-2);padding:8px 14px;border:1px solid var(--line-2);border-radius:6px}
 
   header{position:fixed;top:0;left:0;right:0;z-index:30;background:rgba(11,13,17,.74);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
@@ -63,7 +72,6 @@
   .pillar h3{font-family:var(--serif);font-weight:500;font-size:1.14rem;margin-bottom:10px}
   .pillar p{font-size:.9rem;color:var(--fg-2);line-height:1.55}
 
-  /* operator method: text + signal panel */
   .opgrid{display:grid;grid-template-columns:1fr .82fr;gap:54px;align-items:start;margin-top:8px}
   .opgrid .copy h2{margin-bottom:18px}
   .opgrid .copy p{color:var(--fg-2);font-size:1rem;line-height:1.65;max-width:48ch}
@@ -98,7 +106,6 @@
   .offer .req{margin-top:26px}
   .offer .req a{font-size:.84rem}
 
-  /* portal as centerpiece */
   .portal{display:grid;grid-template-columns:1.1fr .9fr;gap:50px;align-items:center}
   .portal .biz{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
   .portal h2{margin-bottom:16px}
@@ -114,7 +121,6 @@
   .chan .ck{font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3);width:120px;flex-shrink:0}
   .chan .ck .pref{color:var(--accent)}
   .chan .cv{font-family:var(--serif);font-size:1.18rem;color:var(--fg)}
-  .chan .ar{margin-left:auto;color:var(--accent);font-family:var(--mono)}
   .contact-foot{margin-top:26px;color:var(--fg-3);font-size:.9rem}
 
   footer{border-top:1px solid var(--line);padding-block:56px}
@@ -135,7 +141,7 @@
     body{font-size:15px}
     .nav nav,.clogin,.status{display:none}
     .pillars{grid-template-columns:1fr;gap:30px}
-    .chan{flex-wrap:wrap;gap:4px 16px}.chan .ck{width:auto}.chan .ar{margin-left:0}
+    .chan{flex-wrap:wrap;gap:4px 16px}.chan .ck{width:auto}.totag{margin-left:0}
   }
 </style>
 </head>
@@ -153,7 +159,7 @@
     </nav>
     <span class="status"><span class="led"></span>cabinet&nbsp;&middot;&nbsp;live</span>
     <a class="clogin" href="https://client.zwire.pro">Client login</a>
-    <a class="btn" href="#contact">Request a brief</a>
+    <a class="btn stub" href="#contact">Request a brief</a>
   </div>
 </header>
 
@@ -165,7 +171,7 @@
       <h1>Private intelligence<span class="d">.</span></h1>
       <p class="one">Open-source intelligence, lawfully sourced and graded for confidence — <b>for decisions that can't afford to be wrong.</b></p>
       <div class="cta">
-        <a class="btn" href="#offers">Request a brief</a>
+        <a class="btn stub" href="#offers">Request a brief</a>
         <a class="arrow" href="#method">See the method&nbsp;&rarr;</a>
       </div>
     </div>
@@ -224,21 +230,21 @@
           <h3>Quick</h3>
           <div class="price">$200</div>
           <p class="pitch">Put the cabinet's lawful OSINT on a single subject and get a sourced, confidence-graded read within 10 hours. A person, a company — or <b>run it on your own name first</b> to see what the open world already holds.</p>
-          <div class="req"><a class="btn ghost" href="#contact">Request Quick</a></div>
+          <div class="req"><a class="btn ghost stub" href="#contact">Request Quick</a></div>
         </div>
         <div class="offer reco">
           <div class="tag">Recommended</div>
           <h3>Full Report</h3>
           <div class="price">$1,000</div>
           <p class="pitch">A monitored investigation with a dedicated analyst on your file for days — full provenance, one revision, every finding graded. <b>Delivered on the channel you prefer — Telegram by default.</b></p>
-          <div class="req"><a class="btn" href="#contact">Request Full Report</a></div>
+          <div class="req"><a class="btn stub" href="#contact">Request Full Report</a></div>
         </div>
         <div class="offer">
           <div class="tag">Business only · client portal</div>
           <h3>Business</h3>
           <div class="price"><span class="from">from</span>$3,500</div>
           <p class="pitch">Scoped engagements for legal, corporate and high-sensitivity matters — strict handling, a single agreed recipient, and a <b>private password-protected portal</b> on our own infrastructure where your files live.</p>
-          <div class="req"><a class="btn ghost" href="#contact">Request Business</a></div>
+          <div class="req"><a class="btn ghost stub" href="#contact">Request Business</a></div>
         </div>
       </div>
     </div>
@@ -271,9 +277,9 @@
       <div class="seclabel"><span class="label">Reach the cabinet</span></div>
       <h2>Every channel reaches the <em>cabinet directly.</em></h2>
       <div class="channels">
-        <a class="chan" href="#"><span class="ck"><span class="pref">Telegram · preferred</span></span><span class="cv">@placeholder</span><span class="ar">&rarr;</span></a>
-        <a class="chan" href="mailto:contact@zwire.pro"><span class="ck">Email</span><span class="cv">contact@zwire.pro</span><span class="ar">&rarr;</span></a>
-        <a class="chan" href="mailto:zwire@protonmail.com"><span class="ck">Proton</span><span class="cv">zwire@protonmail.com</span><span class="ar">&rarr;</span></a>
+        <a class="chan stubrow" href="#"><span class="ck"><span class="pref">Telegram · preferred</span></span><span class="cv">@placeholder</span><span class="totag">to wire</span></a>
+        <a class="chan stubrow" href="#"><span class="ck">Email</span><span class="cv">contact@zwire.pro</span><span class="totag">to wire</span></a>
+        <a class="chan stubrow" href="#"><span class="ck">Proton</span><span class="cv">zwire@protonmail.com</span><span class="totag">to wire</span></a>
       </div>
       <p class="contact-foot">Reply within 24 hours. Scope and fee agreed in private before any work begins.</p>
     </div>
@@ -286,10 +292,31 @@
     <p class="disc">Zwire is a private intelligence cabinet. We draw exclusively from lawful public and licensed sources. Every finding is sourced and graded for confidence, and delivered to a single recipient. We never hack, impersonate, or use unlawfully obtained data, and we never reveal a client or a confidential source. Briefs are decision-support, not legal, financial or professional advice; confidence grades express analytical assessment, not certainty. Operating entity and registration available on request.</p>
     <div class="meta">
       <span class="brand">Zwire<span class="d" style="color:var(--accent)">.</span></span>
-      <span class="cp">&copy; 2026 Zwire &middot; T3 Opérateur</span>
+      <span class="cp">&copy; 2026 Zwire &middot; T3 · preview</span>
     </div>
   </div>
 </footer>
+
+<div class="pvbar"><span class="ld"></span>Preview &middot; contact endpoints not wired &mdash; wired &amp; verified at go-live</div>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.nav nav a'));
+  var map = {};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(l){ l.classList.remove('active'); });
+        if(map[e.target.id]) map[e.target.id].classList.add('active');
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  ['standard','method','offers','contact'].forEach(function(id){
+    var el = document.getElementById(id); if(el) obs.observe(el);
+  });
+})();
+</script>
 
 </body>
 </html>
