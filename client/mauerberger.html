@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zwire · Benjamin Mauerberger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="portal.css">
+<style>
+  .wmark{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.035}
+  .wmark span{position:absolute;top:40%;left:-10%;width:130%;text-align:center;transform:rotate(-24deg);font-family:var(--mono);font-size:2.4rem;letter-spacing:.5em;color:var(--ink);white-space:nowrap}
+  main{position:relative;z-index:1}
+  .doc{padding-top:40px}
+  .shell{display:grid;grid-template-columns:200px 1fr;gap:48px;align-items:start}
+  .rail{position:sticky;top:74px}
+  .rail .rl{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-3);margin-bottom:14px}
+  .rail a{display:flex;align-items:center;gap:9px;font-size:.84rem;color:var(--ink-2);padding:7px 0;transition:color .2s}
+  .rail a .d{width:5px;height:5px;border-radius:50%;background:var(--ink-3);flex-shrink:0}
+  .rail a:hover{color:var(--ink)}
+  .rail a.active{color:var(--gold)}.rail a.active .d{background:var(--gold)}
+
+  .cover .eyebrow{font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+  .cover h1{font-family:var(--serif);font-weight:400;font-size:clamp(2.1rem,5vw,3rem);line-height:1.04;margin-top:10px}
+  .cover .role{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-top:12px}
+  .cover .chiprail{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+
+  .bottomline{border:1px solid rgba(201,169,97,.3);background:linear-gradient(180deg,var(--gold-dim),transparent 60%);border-radius:12px;padding:26px 28px;margin-top:34px}
+  .bottomline .bl{font-family:var(--mono);font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+  .bottomline dl{display:grid;grid-template-columns:140px 1fr;gap:14px 22px}
+  .bottomline dt{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);padding-top:3px}
+  .bottomline dd{color:var(--ink);font-size:1rem;line-height:1.5}
+  .bottomline dd b{color:var(--gold);font-weight:500}
+
+  section.mod{border-top:1px solid var(--line);padding-top:30px;margin-top:46px;scroll-margin-top:74px}
+  section.mod .mt{font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-3);margin-bottom:16px}
+  section.mod h2{font-family:var(--serif);font-weight:400;font-size:1.6rem;line-height:1.15;margin-bottom:14px}
+  section.mod p{color:var(--ink-2);font-size:1rem;line-height:1.68;max-width:62ch;margin-bottom:12px}
+  section.mod p b{color:var(--ink);font-weight:500}
+
+  .idtable{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:6px}
+  .idrow{display:grid;grid-template-columns:200px 1fr;gap:20px;padding:14px 22px;border-bottom:1px solid var(--line)}
+  .idrow:last-child{border-bottom:none}
+  .idrow .k{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+  .idrow .v{color:var(--ink);font-size:.96rem}
+
+  .ledger{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .lrow{display:grid;grid-template-columns:1fr auto auto;gap:18px;align-items:center;padding:13px 22px;border-bottom:1px solid var(--line)}
+  .lrow:last-child{border-bottom:none}
+  .lrow .lk{font-size:.92rem;color:var(--ink)}
+  .lrow .lv{font-family:var(--mono);font-size:.74rem;color:var(--ink-2)}
+  .lrow .lv.yes{color:var(--warn)}.lrow .lv.no{color:var(--clean)}
+  .lrow .lg{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;color:var(--ink-3);border:1px solid var(--line-2);border-radius:4px;padding:2px 7px}
+
+  .tl{border-left:1px solid var(--line-2);margin-top:6px;padding-left:22px}
+  .tlrow{position:relative;padding:10px 0}
+  .tlrow::before{content:"";position:absolute;left:-26px;top:16px;width:7px;height:7px;border-radius:50%;background:var(--ink-3)}
+  .tlrow.hot::before{background:var(--warn)}
+  .tlrow .dt{font-family:var(--mono);font-size:.68rem;color:var(--gold);letter-spacing:.06em}
+  .tlrow .ev{color:var(--ink-2);font-size:.94rem;margin-top:3px}
+
+  .confbox{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:22px 24px;margin-top:6px}
+  .confbox .top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .confbox .top .lvl{font-family:var(--serif);font-size:1.3rem;color:var(--gold)}
+  .confbox p{margin-bottom:10px}
+  .confbox .move{font-family:var(--mono);font-size:.8rem;color:var(--ink-2);border-top:1px solid var(--line);padding-top:14px;margin-top:6px}
+  .confbox .move b{color:var(--gold)}
+
+  .gloss{border-bottom:1px dotted var(--gold);cursor:help;position:relative;outline:none}
+  .gloss .tip{position:absolute;left:0;bottom:140%;width:240px;background:var(--panel-2);border:1px solid var(--line-2);border-radius:8px;padding:11px 13px;font-family:var(--sans);font-size:.82rem;line-height:1.45;color:var(--ink-2);opacity:0;visibility:hidden;transition:.15s;z-index:5;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+  .gloss:hover .tip,.gloss:focus .tip,.gloss:focus-within .tip{opacity:1;visibility:visible}
+  .gloss .tip b{color:var(--gold)}
+
+  .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+  .actbtn{font-family:var(--mono);font-size:.78rem;border:1px solid var(--line-2);border-radius:999px;padding:11px 20px;color:var(--ink-2);transition:.2s}
+  .actbtn:hover{border-color:var(--gold);color:var(--gold)}
+
+  @media(max-width:980px){
+    .shell{grid-template-columns:1fr;gap:0}
+    .rail{position:static;display:flex;gap:8px;overflow-x:auto;margin-bottom:26px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+    .rail .rl{display:none}
+    .rail a{white-space:nowrap;border:1px solid var(--line-2);border-radius:999px;padding:7px 13px}.rail a .d{display:none}
+    .bottomline dl{grid-template-columns:1fr;gap:4px 0}
+    .bottomline dt{padding-top:10px}
+    .idrow{grid-template-columns:1fr;gap:4px}
+  }
+</style>
+</head>
+<body>
+
+<div class="wmark"><span>P. — &middot; CONFIDENTIAL &middot; P. — &middot; CONFIDENTIAL &middot; P. —</span></div>
+
+<div class="handling"><div class="wrap h">
+  <span><span class="c">Confidentiel</span> &middot; client-eyes only</span>
+  <span>Préparé pour <span class="g">P. —</span></span>
+  <span>Émis 2026-06-01 &middot; v1</span>
+  <span>Sources publiques &amp; licites, notées</span>
+</div></div>
+
+<div class="topbar"><div class="wrap row">
+  <span class="brand">Zwire<span class="d">.</span></span>
+  <a class="back" href="index.html">← Espace Patrick</a>
+  <span class="subj">Benjamin Mauerberger<span class="gr">Confiance Modérée</span></span>
+  <div class="sp"></div>
+  <a class="out" href="login.html">Déconnexion</a>
+</div></div>
+
+<main class="wrap doc">
+  <div class="shell">
+
+    <nav class="rail" aria-label="Sections">
+      <div class="rl">Dossier</div>
+      <a href="#essentiel" class="active"><span class="d"></span>L'essentiel</a>
+      <a href="#identite"><span class="d"></span>Identité</a>
+      <a href="#exposition"><span class="d"></span>Sanctions &amp; exposition</a>
+      <a href="#operations"><span class="d"></span>Où il opère</a>
+      <a href="#reseau"><span class="d"></span>Réseau &amp; argent</a>
+      <a href="#chronologie"><span class="d"></span>Chronologie</a>
+      <a href="#confiance"><span class="d"></span>Confiance</a>
+      <a href="#sources"><span class="d"></span>Sources &amp; méthode</a>
+    </nav>
+
+    <div class="content">
+
+      <div class="cover">
+        <div class="eyebrow">Dossier ZWR-MAU-1979</div>
+        <h1>Benjamin Mauerberger</h1>
+        <div class="role">Principal &middot; financier en fuite</div>
+        <div class="chiprail"><span class="chip warn">Fugitif &middot; mandats actifs</span><span class="chip warn">~620 M USD saisis</span><span class="chip">Sud-africain</span><span class="chip">Localisé : Seychelles</span></div>
+      </div>
+
+      <section id="essentiel" class="bottomline">
+        <div class="bl">L'essentiel pour vous</div>
+        <dl>
+          <dt>La question</dt><dd>Le sujet est-il bien l'homme derrière le réseau, et où en est l'application de la loi ?</dd>
+          <dt>Notre réponse</dt><dd><b>Oui, très probablement.</b> Financier d'un réseau d'escroquerie transfrontalier, aujourd'hui en fuite sous mandats actifs.</dd>
+          <dt>Niveau de confiance</dt><dd><b>Modérée</b> — voir « Confiance » plus bas : pourquoi pas « Élevée », et ce qui la ferait monter.</dd>
+          <dt>Où ça en est</dt><dd>Mandats thaïlandais actifs, gel d'actifs à Singapour, ~620 M USD saisis. Dernière localisation : Seychelles.</dd>
+          <dt>Notre recommandation</dt><dd>Traiter comme une exposition vivante. Toute prise de contact ou transaction passe par vérification du cabinet au préalable.</dd>
+        </dl>
+      </section>
+
+      <section id="identite" class="mod">
+        <div class="mt">Identité</div>
+        <h2>Qui il est</h2>
+        <div class="idtable">
+          <div class="idrow"><span class="k">Nom légal</span><span class="v">Benjamin Mauerberger</span></div>
+          <div class="idrow"><span class="k">Né</span><span class="v">~1978–1979 (estimation)</span></div>
+          <div class="idrow"><span class="k">Nationalité</span><span class="v">Afrique du Sud (Le Cap, origine)</span></div>
+          <div class="idrow"><span class="k">Véhicules</span><span class="v">Capital Asia Investments · Global Alia Holdings (<span class="gloss" tabindex="0">BVI<span class="tip"><b>BVI</b> — Îles Vierges britanniques, juridiction offshore où la propriété d'une société peut rester secrète.</span></span>)</span></div>
+          <div class="idrow"><span class="k">Application de la loi</span><span class="v">Mandats Thaïlande · gel <span class="gloss" tabindex="0">MAS<span class="tip"><b>MAS</b> — banque centrale et régulateur financier de Singapour.</span></span> (Singapour)</span></div>
+          <div class="idrow"><span class="k">Dernière localisation</span><span class="v">Seychelles · base opérationnelle antérieure : Bangkok</span></div>
+        </div>
+      </section>
+
+      <section id="exposition" class="mod">
+        <div class="mt">Sanctions &amp; exposition</div>
+        <h2>Ce qui pèse sur lui</h2>
+        <div class="ledger">
+          <div class="lrow"><span class="lk"><span class="gloss" tabindex="0">PEP<span class="tip"><b>PEP</b> — « personne politiquement exposée » : profil à vigilance renforcée pour la conformité.</span></span> — personne politiquement exposée</span><span class="lv yes">Oui</span><span class="lg">B1</span></div>
+          <div class="lrow"><span class="lk"><span class="gloss" tabindex="0">OFAC<span class="tip"><b>OFAC</b> — bureau du Trésor américain qui administre les sanctions. « Listé » = visé par des sanctions.</span></span> / UE / ONU — listé</span><span class="lv no">Non</span><span class="lg">A2</span></div>
+          <div class="lrow"><span class="lk">Mandats d'arrêt — Thaïlande</span><span class="lv yes">Actifs</span><span class="lg">A1</span></div>
+          <div class="lrow"><span class="lk">Gel d'actifs — Singapour</span><span class="lv yes">En vigueur</span><span class="lg">A1</span></div>
+          <div class="lrow"><span class="lk">Actifs saisis (cumulés)</span><span class="lv">~620 M USD</span><span class="lg">A1</span></div>
+        </div>
+      </section>
+
+      <section id="operations" class="mod">
+        <div class="mt">Où il opère</div>
+        <h2>Géographie</h2>
+        <p>Origine au <b>Cap</b> (Afrique du Sud). Base opérationnelle à <b>Bangkok</b> jusqu'à l'émission des mandats thaïlandais ; dernière localisation établie aux <b>Seychelles</b>. Les véhicules de détention sont domiciliés en juridiction offshore opaque, ce qui complique la traçabilité des flux mais n'efface pas les saisies déjà prononcées.</p>
+      </section>
+
+      <section id="reseau" class="mod">
+        <div class="mt">Réseau &amp; argent</div>
+        <h2>La structure</h2>
+        <p>Deux véhicules ressortent : <b>Capital Asia Investments</b> et <b>Global Alia Holdings</b> (BVI, propriété opaque). Le schéma relie la personne aux fonds, puis aux juridictions de domiciliation. Les flux retracés convergent vers les comptes gelés à Singapour ; la part hors d'atteinte transite par les structures offshore.</p>
+        <p>Le réseau est un véhicule d'escroquerie transfrontalier : collecte en amont, dispersion via holdings, sortie offshore. Les saisies (~620 M USD) portent sur la part identifiée et bloquée.</p>
+      </section>
+
+      <section id="chronologie" class="mod">
+        <div class="mt">Chronologie</div>
+        <h2>Les jalons</h2>
+        <div class="tl">
+          <div class="tlrow"><div class="dt">2023</div><div class="ev">Montée en charge du réseau ; flux vers holdings offshore.</div></div>
+          <div class="tlrow hot"><div class="dt">2024</div><div class="ev">Mandats d'arrêt émis en Thaïlande ; départ de Bangkok.</div></div>
+          <div class="tlrow hot"><div class="dt">2025</div><div class="ev">Gel d'actifs à Singapour ; ~620 M USD saisis.</div></div>
+          <div class="tlrow"><div class="dt">2026</div><div class="ev">Dernière localisation établie : Seychelles. Statut : fugitif.</div></div>
+        </div>
+      </section>
+
+      <section id="confiance" class="mod">
+        <div class="mt">Confiance</div>
+        <h2>Pourquoi « Modérée »</h2>
+        <div class="confbox">
+          <div class="top"><span class="lvl">Modérée</span><span class="conf mod" style="position:static"><span class="gloss" tabindex="0">ICD-203<span class="tip"><b>ICD-203</b> — standard du renseignement américain pour énoncer le degré de confiance d'une évaluation.</span></span></span></div>
+          <p>Très probablement le bon homme : les pièces primaires (cour thaïlandaise, régulateur singapourien) sont solides et concordantes.</p>
+          <p>Tenu à « Modérée » plutôt qu'« Élevée » car le sujet voyage sous alias et son année de naissance est une estimation — deux points qui empêchent une identification formelle à 100 %.</p>
+          <div class="move">Ce qui la ferait passer à <b>Élevée</b> : confirmation d'un document d'identité officiel, ou recoupement biométrique sur la localisation actuelle. Le cabinet poursuit ce point.</div>
+        </div>
+      </section>
+
+      <section id="sources" class="mod">
+        <div class="mt">Sources &amp; méthode</div>
+        <h2>Comment nous le savons</h2>
+        <p>Dossier établi à partir de sources <b>publiques et licites</b> : décisions de la cour pénale thaïlandaise, communications du régulateur singapourien, registres de sociétés, fuites offshore documentées (ICIJ), presse spécialisée. Chaque source est notée selon l'échelle <b>Admiralty</b> (A1 = source fiable, information confirmée → C3 et au-delà = à manier avec prudence). Chaque jugement porte une cote de confiance <b>ICD-203</b>.</p>
+        <p>Le cabinet ne pirate pas, n'usurpe pas d'identité et n'utilise aucune donnée obtenue illégalement. Arrêté au 2026-06-01.</p>
+        <div class="actions">
+          <a class="actbtn" href="#" onclick="window.print();return false;">Télécharger / Imprimer (PDF)</a>
+          <a class="actbtn" href="#contact">Poser une question sur ce dossier</a>
+        </div>
+      </section>
+
+      <div class="officer-wrap" id="contact" style="margin-top:46px">
+        <div class="seclabel">Votre chargé de dossier</div>
+        <div class="officer">
+          <div class="av">Z</div>
+          <div class="who"><div class="n">Cabinet Zwire</div><div class="r">Une question sur ce dossier · une vérification · un suivi</div></div>
+          <div class="act"><a class="pref" href="#">Message sécurisé</a><a href="#">Telegram</a></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer><div class="wrap">
+  <p class="conf-note">Document privilégié, préparé par le cabinet Zwire sur une base à destinataire unique (P. —). Toute transmission ultérieure n'est pas autorisée. Méthode : sources publiques et licites, notation Admiralty des sources, confiance ICD-203. Une évaluation exprime un jugement analytique, pas une certitude. Préparé par Zwire — entité d'exploitation et coordonnées de vérification disponibles sur demande.</p>
+  <div class="colo"><span class="brand">Zwire<span class="d" style="color:var(--gold)">.</span></span><span class="meta">ZWR-MAU-1979 · émis 2026-06-01 · v1 · client.zwire.pro</span></div>
+</div></footer>
+
+<script>
+(function(){
+  var links = Array.prototype.slice.call(document.querySelectorAll('.rail a'));
+  var map = {}; links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+  var obs = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){
+      links.forEach(function(l){ l.classList.remove('active'); });
+      if(map[e.target.id]) map[e.target.id].classList.add('active');
+    }});
+  }, { rootMargin:'-30% 0px -60% 0px' });
+  ['essentiel','identite','exposition','operations','reseau','chronologie','confiance','sources'].forEach(function(id){
+    var el=document.getElementById(id); if(el) obs.observe(el);
+  });
+})();
+</script>
+
+</body>
+</html>
