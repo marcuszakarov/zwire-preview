@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Zwire · ZWR-MAU-1979 · Benjamin Mauerberger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c0c0c;
+    --paper:#ededea;
+    --paper-2:#e3e3df;
+    --red:#e5484d;
+    --muted:#5a5a56;
+    --green:#1f7a4d;
+    --amber:#b06a00;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Space Grotesk',system-ui,-apple-system,sans-serif;
+    font-size:16px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .display{font-family:'Archivo Black',sans-serif;text-transform:uppercase;letter-spacing:-0.01em;line-height:0.95;}
+  a{color:inherit;text-decoration:none;}
+
+  /* Watermark */
+  .watermark{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+  }
+  .watermark span{
+    font-family:'Archivo Black',sans-serif;text-transform:uppercase;
+    font-size:14vw;color:var(--ink);opacity:0.035;
+    transform:rotate(-24deg);white-space:nowrap;letter-spacing:0.05em;
+  }
+  .layer{position:relative;z-index:1;}
+
+  /* Handling */
+  .handling{
+    background:var(--ink);color:var(--paper);
+    font-size:11px;letter-spacing:0.14em;text-transform:uppercase;
+    padding:8px 16px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;
+    border-bottom:4px solid var(--red);
+  }
+  .handling .dot{color:var(--red);font-weight:700;}
+  .handling .v{margin-left:auto;background:var(--red);color:#fff;padding:2px 8px;font-weight:700;}
+
+  /* Sticky back bar — strong, full-width, hard */
+  .backbar{
+    position:sticky;top:0;z-index:20;
+    background:var(--red);color:#fff;
+    display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;
+    border-bottom:4px solid var(--ink);
+  }
+  .backbar .back{
+    display:flex;align-items:center;gap:10px;
+    padding:15px 18px;
+    font-family:'Archivo Black',sans-serif;font-size:15px;text-transform:uppercase;letter-spacing:0.02em;
+    border-right:4px solid var(--ink);background:var(--ink);color:#fff;
+  }
+  .backbar .back .arr{font-size:20px;line-height:1;}
+  .backbar .back:active{background:var(--paper);color:var(--ink);}
+  @media(hover:hover){ .backbar .back:hover{background:var(--paper);color:var(--ink);} }
+  .backbar .mid{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .backbar .mid b{font-family:'Archivo Black',sans-serif;}
+  .backbar .grade{padding:6px 12px;margin-right:14px;background:#fff;color:var(--ink);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:700;border:2px solid var(--ink);white-space:nowrap;}
+
+  .wrap{max-width:1040px;margin:0 auto;padding:0 16px 80px;}
+
+  /* Cover */
+  .cover{padding:30px 0 0;}
+  .cover-top{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end;}
+  .cover-portrait{
+    width:120px;height:150px;flex:0 0 auto;
+    border:4px solid var(--ink);background:var(--paper-2);position:relative;overflow:hidden;
+  }
+  .cover-portrait .mono{position:absolute;top:8px;left:9px;font-family:'Archivo Black',sans-serif;font-size:18px;color:var(--red);}
+  .cover-portrait .sil{
+    position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+    width:74px;height:100px;
+    background:
+      radial-gradient(circle at 50% 24%, var(--red) 0 20px, transparent 21px),
+      radial-gradient(ellipse 72% 60% at 50% 116%, var(--red) 0 60%, transparent 61%);
+    opacity:0.9;
+  }
+  .cover-id{min-width:0;flex:1 1 300px;}
+  .cover-id .code{font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+  .cover-id h1{font-size:clamp(40px,11vw,86px);margin:6px 0 8px;}
+  .cover-id .role{font-size:15px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;color:var(--ink);}
+  .cover-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:20px;}
+  .cover-chips .chip{font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:600;border:2px solid var(--ink);padding:5px 10px;}
+  .cover-chips .chip.red{background:var(--red);color:#fff;border-color:var(--red);}
+
+  /* Jump list — big buttons */
+  .jump{margin-top:30px;border-top:4px solid var(--ink);border-bottom:4px solid var(--ink);}
+  .jump-lbl{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--red);font-weight:700;padding:10px 2px 2px;}
+  .jump-grid{display:flex;flex-wrap:wrap;gap:0;border:3px solid var(--ink);margin:8px 0 0;}
+  .jump-grid a{
+    flex:1 1 130px;text-align:left;padding:13px 12px;
+    font-size:12px;letter-spacing:0.04em;text-transform:uppercase;font-weight:700;
+    border-right:3px solid var(--ink);border-bottom:3px solid var(--ink);
+    display:flex;gap:9px;align-items:baseline;
+  }
+  .jump-grid a .n{font-family:'Archivo Black',sans-serif;color:var(--red);font-size:14px;}
+  .jump-grid a:active{background:var(--ink);color:var(--paper);}
+  @media(hover:hover){ .jump-grid a:hover{background:var(--ink);color:var(--paper);} }
+
+  /* Section */
+  section.block{margin-top:48px;}
+  .divider{
+    display:flex;align-items:center;gap:14px;
+    background:var(--ink);color:var(--paper);
+    padding:13px 16px;
+    border-left:8px solid var(--red);
+  }
+  .divider .num{font-family:'Archivo Black',sans-serif;color:var(--red);font-size:18px;}
+  .divider h2{font-family:'Archivo Black',sans-serif;font-size:clamp(18px,5vw,28px);margin:0;text-transform:uppercase;letter-spacing:0.01em;}
+  .block-body{border:3px solid var(--ink);border-top:0;padding:20px 18px;}
+
+  /* Synthèse */
+  .synth{display:grid;gap:0;}
+  .synth .qa{border-bottom:3px solid var(--ink);padding:16px 0;display:grid;grid-template-columns:140px 1fr;gap:16px;align-items:start;}
+  .synth .qa:last-child{border-bottom:0;}
+  .synth .qa .k{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;color:var(--red);}
+  .synth .qa .v{font-size:16px;}
+  .synth .qa.answer .v{font-family:'Archivo Black',sans-serif;font-size:clamp(18px,4.6vw,24px);line-height:1.2;text-transform:none;letter-spacing:-0.005em;}
+  .synth .qa .v b{font-weight:700;}
+
+  /* Identity field table */
+  .fields{display:grid;grid-template-columns:1fr;gap:0;}
+  .fields .f{display:grid;grid-template-columns:200px 1fr;gap:14px;padding:13px 0;border-bottom:2px solid var(--ink);}
+  .fields .f:last-child{border-bottom:0;}
+  .fields .f .k{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;color:var(--muted);}
+  .fields .f .val{font-size:15px;font-weight:500;}
+
+  /* Sanctions ledger — data foregrounded */
+  .ledger{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;border:3px solid var(--ink);}
+  .ledger .cell{padding:16px 14px;border-right:3px solid var(--ink);border-bottom:3px solid var(--ink);}
+  .ledger .cell .k{font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;font-weight:600;color:var(--muted);min-height:2.4em;}
+  .ledger .cell .big{font-family:'Archivo Black',sans-serif;font-size:clamp(22px,6vw,34px);margin:6px 0 2px;line-height:0.95;}
+  .ledger .cell .big.yes{color:var(--red);}
+  .ledger .cell .big.no{color:var(--green);}
+  .ledger .cell .src{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;color:var(--ink);background:var(--paper-2);display:inline-block;padding:2px 6px;border:2px solid var(--ink);}
+
+  .prose{font-size:15.5px;line-height:1.6;}
+  .prose b{font-weight:700;}
+
+  /* Timeline */
+  .timeline{display:grid;gap:0;}
+  .tl{display:grid;grid-template-columns:96px 1fr;gap:0;border-bottom:3px solid var(--ink);}
+  .tl:last-child{border-bottom:0;}
+  .tl .yr{font-family:'Archivo Black',sans-serif;font-size:clamp(26px,7vw,40px);color:var(--ink);padding:16px 14px;border-right:3px solid var(--ink);line-height:0.9;}
+  .tl .ev{padding:16px 16px;font-size:15px;display:flex;align-items:center;}
+  .tl.hot{background:#0c0c0c;color:var(--paper);}
+  .tl.hot .yr{color:var(--red);border-right-color:var(--red);}
+  .tl.hot .ev::after{content:"PIVOT";margin-left:auto;font-size:9.5px;letter-spacing:0.14em;font-weight:700;background:var(--red);color:#fff;padding:3px 7px;align-self:center;}
+
+  /* Confidence */
+  .conf-box{border:3px solid var(--ink);border-top:0;}
+  .conf-box .why{padding:20px 18px;font-size:15.5px;line-height:1.6;}
+  .conf-box .moveup{background:var(--red);color:#fff;padding:16px 18px;font-weight:600;font-size:14.5px;display:flex;gap:10px;align-items:baseline;border-top:3px solid var(--ink);}
+  .conf-box .moveup .tag{font-family:'Archivo Black',sans-serif;font-size:11px;letter-spacing:0.1em;flex:0 0 auto;background:var(--ink);color:#fff;padding:4px 8px;}
+
+  /* Sources + actions */
+  .srcmethod .prose{margin-bottom:18px;}
+  .doc-actions{display:flex;flex-wrap:wrap;gap:0;border:3px solid var(--ink);}
+  .doc-actions a,.doc-actions button{
+    flex:1 1 200px;text-align:center;padding:15px 14px;cursor:pointer;
+    font-family:'Space Grotesk',sans-serif;
+    font-size:12.5px;letter-spacing:0.06em;text-transform:uppercase;font-weight:700;
+    border:0;border-right:3px solid var(--ink);background:transparent;color:var(--ink);
+  }
+  .doc-actions a:last-child,.doc-actions button:last-child{border-right:0;}
+  .doc-actions .primary{background:var(--red);color:#fff;}
+  .doc-actions a:active,.doc-actions button:active{background:var(--ink);color:var(--paper);}
+  @media(hover:hover){ .doc-actions a:hover,.doc-actions button:hover{background:var(--ink);color:var(--paper);} .doc-actions .primary:hover{background:#c93b40;} }
+
+  /* Contact */
+  .contact{margin-top:50px;border:4px solid var(--ink);}
+  .contact-head{background:var(--ink);color:var(--paper);padding:14px 18px;}
+  .contact-head .lbl{font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--red);font-weight:700;}
+  .contact-head h3{font-family:'Archivo Black',sans-serif;font-size:clamp(20px,5vw,30px);margin:6px 0 0;text-transform:uppercase;}
+  .contact-body{padding:18px;}
+  .contact-body .line{font-size:13px;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:14px;}
+  .actions{display:flex;flex-wrap:wrap;gap:0;border:3px solid var(--ink);}
+  .actions a{flex:1 1 160px;text-align:center;padding:14px 12px;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;border-right:3px solid var(--ink);}
+  .actions a:last-child{border-right:0;}
+  .actions a.primary{background:var(--red);color:#fff;}
+  .actions a:active{background:var(--ink);color:var(--paper);}
+  @media(hover:hover){ .actions a:hover{background:var(--ink);color:var(--paper);} .actions a.primary:hover{background:#c93b40;} }
+
+  /* Glossary term — mobile-safe tap reveal */
+  .term{
+    border:0;background:transparent;padding:0;cursor:pointer;
+    font:inherit;color:var(--red);font-weight:700;
+    border-bottom:2px dotted var(--red);
+    display:inline;
+  }
+  .term[aria-expanded="true"]{background:var(--red);color:#fff;border-bottom-color:var(--red);}
+  .gloss-def{
+    display:none;
+    margin:10px 0 4px;
+    background:var(--ink);color:var(--paper);
+    border-left:6px solid var(--red);
+    padding:12px 14px;font-size:13.5px;line-height:1.5;
+    max-width:86vw;
+  }
+  .gloss-def.open{display:block;}
+  .gloss-def .gt{font-family:'Archivo Black',sans-serif;text-transform:uppercase;color:var(--red);font-size:12px;letter-spacing:0.06em;margin-right:8px;}
+
+  /* Back to top / index */
+  .endnav{margin-top:40px;display:flex;flex-wrap:wrap;gap:0;border:3px solid var(--ink);}
+  .endnav a{flex:1 1 200px;text-align:center;padding:16px;font-family:'Archivo Black',sans-serif;font-size:14px;text-transform:uppercase;letter-spacing:0.02em;border-right:3px solid var(--ink);}
+  .endnav a:last-child{border-right:0;}
+  .endnav a.red{background:var(--red);color:#fff;}
+  .endnav a:active{background:var(--ink);color:var(--paper);}
+  @media(hover:hover){ .endnav a:hover{background:var(--ink);color:var(--paper);} }
+
+  footer.colo{margin-top:40px;border-top:6px solid var(--ink);padding-top:16px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;color:var(--muted);}
+  footer.colo .w{color:var(--red);}
+
+  @media(max-width:640px){
+    .synth .qa{grid-template-columns:1fr;gap:6px;}
+    .fields .f{grid-template-columns:1fr;gap:3px;}
+    .tl{grid-template-columns:72px 1fr;}
+    .backbar .mid{display:none;}
+    .backbar{grid-template-columns:auto 1fr;}
+    .doc-actions a,.doc-actions button,.actions a,.endnav a,.jump-grid a{flex:1 1 100%;border-right:0;}
+  }
+</style>
+</head>
+<body>
+
+<div class="watermark"><span>P. — · CONFIDENTIEL</span></div>
+
+<div class="layer">
+
+<div class="handling">
+  <span>CONFIDENTIEL</span><span class="dot">·</span>
+  <span>DIFFUSION RESTREINTE</span><span class="dot">·</span>
+  <span>PRÉPARÉ POUR P. —</span><span class="dot">·</span>
+  <span>ÉMIS 2026-06-01</span>
+  <span class="v">v1</span>
+</div>
+
+<div class="backbar">
+  <a class="back" href="index.html"><span class="arr">&larr;</span> Retour · Dossiers</a>
+  <div class="mid">ZWIRE · <b>Benjamin Mauerberger</b></div>
+  <span class="grade">Confiance · Modérée</span>
+</div>
+
+<div class="wrap">
+
+  <header class="cover">
+    <div class="cover-top">
+      <div class="cover-portrait">
+        <span class="mono">BM</span>
+        <span class="sil"></span>
+      </div>
+      <div class="cover-id">
+        <div class="code">ZWR-MAU-1979</div>
+        <h1 class="display">Benjamin<br>Mauerberger</h1>
+        <div class="role">Principal · financier en fuite</div>
+      </div>
+    </div>
+    <div class="cover-chips">
+      <span class="chip red">Fugitif · mandats actifs</span>
+      <span class="chip">~620 M USD saisis</span>
+      <span class="chip">Sud-africain</span>
+      <span class="chip">Localisé : Seychelles</span>
+    </div>
+  </header>
+
+  <nav class="jump">
+    <div class="jump-lbl">Aller à la section</div>
+    <div class="jump-grid">
+      <a href="#synthese"><span class="n">01</span> Synthèse</a>
+      <a href="#identite"><span class="n">02</span> Identité</a>
+      <a href="#sanctions"><span class="n">03</span> Sanctions</a>
+      <a href="#geo"><span class="n">04</span> Où il opère</a>
+      <a href="#reseau"><span class="n">05</span> Réseau &amp; argent</a>
+      <a href="#chrono"><span class="n">06</span> Chronologie</a>
+      <a href="#confiance"><span class="n">07</span> Confiance</a>
+      <a href="#sources"><span class="n">08</span> Sources</a>
+    </div>
+  </nav>
+
+  <!-- 01 Synthèse -->
+  <section class="block" id="synthese">
+    <div class="divider"><span class="num">01</span><h2>Synthèse</h2></div>
+    <div class="block-body">
+      <div class="synth">
+        <div class="qa"><div class="k">Question</div><div class="v">Le sujet est-il l'homme derrière le réseau, et où en est l'application de la loi ?</div></div>
+        <div class="qa answer"><div class="k">Réponse</div><div class="v">Oui, très probablement. Financier d'un réseau d'escroquerie transfrontalier, aujourd'hui en fuite sous mandats actifs.</div></div>
+        <div class="qa"><div class="k">Confiance</div><div class="v">Modérée — voir plus bas : pourquoi pas Élevée et ce qui la ferait monter.</div></div>
+        <div class="qa"><div class="k">Statut</div><div class="v">Mandats thaïlandais actifs, gel à Singapour, ~620 M USD saisis. Dernière localisation : Seychelles.</div></div>
+        <div class="qa"><div class="k">Recommandation</div><div class="v">Exposition vivante. Tout contact ou transaction passe par vérification du cabinet au préalable.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 Identité -->
+  <section class="block" id="identite">
+    <div class="divider"><span class="num">02</span><h2>Identité</h2></div>
+    <div class="block-body">
+      <div class="fields">
+        <div class="f"><div class="k">Nom légal</div><div class="val">Benjamin Mauerberger</div></div>
+        <div class="f"><div class="k">Né</div><div class="val">~1978–1979 (estimation)</div></div>
+        <div class="f"><div class="k">Nationalité</div><div class="val">Afrique du Sud (Le Cap)</div></div>
+        <div class="f"><div class="k">Véhicules</div><div class="val">Capital Asia Investments · Global Alia Holdings (<button class="term" data-term="BVI" aria-expanded="false">BVI</button>)
+          <div class="gloss-def" id="def-BVI"><span class="gt">BVI</span>Îles Vierges britanniques, juridiction offshore où la propriété d'une société peut rester secrète.</div>
+        </div></div>
+        <div class="f"><div class="k">Application de la loi</div><div class="val">Mandats Thaïlande · gel <button class="term" data-term="MAS" aria-expanded="false">MAS</button> (Singapour)
+          <div class="gloss-def" id="def-MAS"><span class="gt">MAS</span>Banque centrale et régulateur financier de Singapour.</div>
+        </div></div>
+        <div class="f"><div class="k">Dernière localisation</div><div class="val">Seychelles · base antérieure : Bangkok</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 Sanctions -->
+  <section class="block" id="sanctions">
+    <div class="divider"><span class="num">03</span><h2>Sanctions &amp; exposition</h2></div>
+    <div class="block-body">
+      <div class="ledger">
+        <div class="cell">
+          <div class="k"><button class="term" data-term="PEP" aria-expanded="false">PEP</button> (personne politiquement exposée)</div>
+          <div class="big yes">Oui</div>
+          <span class="src">B1</span>
+          <div class="gloss-def" id="def-PEP"><span class="gt">PEP</span>« personne politiquement exposée » : profil à vigilance renforcée en conformité.</div>
+        </div>
+        <div class="cell">
+          <div class="k"><button class="term" data-term="OFAC" aria-expanded="false">OFAC</button> / UE / ONU listé</div>
+          <div class="big no">Non</div>
+          <span class="src">A2</span>
+          <div class="gloss-def" id="def-OFAC"><span class="gt">OFAC</span>Bureau du Trésor américain qui administre les sanctions ; « listé » = visé par des sanctions.</div>
+        </div>
+        <div class="cell">
+          <div class="k">Mandats Thaïlande</div>
+          <div class="big yes">Actifs</div>
+          <span class="src">A1</span>
+        </div>
+        <div class="cell">
+          <div class="k">Gel Singapour</div>
+          <div class="big yes">En vigueur</div>
+          <span class="src">A1</span>
+        </div>
+        <div class="cell">
+          <div class="k">Actifs saisis</div>
+          <div class="big yes">~620 M USD</div>
+          <span class="src">A1</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 Où il opère -->
+  <section class="block" id="geo">
+    <div class="divider"><span class="num">04</span><h2>Où il opère</h2></div>
+    <div class="block-body">
+      <p class="prose">Origine au Cap. Base à Bangkok jusqu'aux mandats thaïlandais ; dernière localisation aux Seychelles. Véhicules en juridiction offshore opaque — traçabilité difficile, mais saisies déjà prononcées.</p>
+    </div>
+  </section>
+
+  <!-- 05 Réseau & argent -->
+  <section class="block" id="reseau">
+    <div class="divider"><span class="num">05</span><h2>Réseau &amp; argent</h2></div>
+    <div class="block-body">
+      <p class="prose">Deux véhicules : <b>Capital Asia Investments</b> et <b>Global Alia Holdings</b> (BVI, propriété opaque). Personne → fonds → juridictions. Flux retracés vers les comptes gelés à Singapour ; la part hors d'atteinte transite par l'offshore. Réseau d'escroquerie transfrontalier ; saisies <b>~620 M USD</b> sur la part identifiée.</p>
+    </div>
+  </section>
+
+  <!-- 06 Chronologie -->
+  <section class="block" id="chrono">
+    <div class="divider"><span class="num">06</span><h2>Chronologie</h2></div>
+    <div class="block-body" style="padding:0;border:0;">
+      <div class="timeline" style="border:3px solid var(--ink);border-top:0;">
+        <div class="tl"><div class="yr">2023</div><div class="ev">Montée en charge ; flux vers holdings offshore.</div></div>
+        <div class="tl hot"><div class="yr">2024</div><div class="ev">Mandats émis en Thaïlande ; départ de Bangkok.</div></div>
+        <div class="tl hot"><div class="yr">2025</div><div class="ev">Gel à Singapour ; ~620 M USD saisis.</div></div>
+        <div class="tl"><div class="yr">2026</div><div class="ev">Dernière localisation : Seychelles. Statut : fugitif.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 Confiance -->
+  <section class="block" id="confiance">
+    <div class="divider"><span class="num">07</span><h2>Confiance — pourquoi Modérée</h2></div>
+    <div class="conf-box">
+      <div class="why">Très probablement le bon homme : pièces primaires (cour thaïlandaise, régulateur singapourien) solides et concordantes. Tenu à Modérée car le sujet voyage sous alias et l'année de naissance est une estimation.</div>
+      <div class="moveup"><span class="tag">Passe à Élevée</span><span>Avec : confirmation d'un document d'identité officiel, ou recoupement biométrique sur la localisation actuelle.</span></div>
+    </div>
+  </section>
+
+  <!-- 08 Sources -->
+  <section class="block srcmethod" id="sources">
+    <div class="divider"><span class="num">08</span><h2>Sources &amp; méthode</h2></div>
+    <div class="block-body">
+      <p class="prose">Sources publiques et licites : cour pénale thaïlandaise, régulateur singapourien, registres de sociétés, fuites offshore (ICIJ), presse spécialisée. Notation Admiralty des sources (A1 = fiable/confirmé). Confiance <button class="term" data-term="ICD" aria-expanded="false">ICD-203</button>. Aucune donnée illégale. Arrêté au 2026-06-01.</p>
+      <div class="gloss-def" id="def-ICD"><span class="gt">ICD-203</span>Standard du renseignement américain pour énoncer le degré de confiance d'une évaluation.</div>
+      <div class="doc-actions">
+        <button class="primary" onclick="window.print()">Télécharger / Imprimer (PDF)</button>
+        <a href="#contact">Poser une question</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact" id="contact">
+    <div class="contact-head">
+      <div class="lbl">Contact cabinet</div>
+      <h3>Question · vérification · nouvelle enquête</h3>
+    </div>
+    <div class="contact-body">
+      <div class="line">Réponse sous engagement de confidentialité</div>
+      <div class="actions">
+        <a class="primary" href="#">Message sécurisé</a>
+        <a href="#">Telegram</a>
+        <a href="#">Demander une enquête</a>
+      </div>
+    </div>
+  </section>
+
+  <nav class="endnav">
+    <a class="red" href="index.html">&larr; Retour aux dossiers</a>
+    <a href="#synthese">&uarr; Haut du dossier</a>
+  </nav>
+
+  <footer class="colo">
+    ZWR-MAU-1979 · émis 2026-06-01 · v1 · client.zwire.pro &nbsp;—&nbsp; Z<span class="w">W</span>IRE
+  </footer>
+
+</div>
+</div>
+
+<script>
+  document.querySelectorAll('.term').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      var id = 'def-' + btn.getAttribute('data-term');
+      var def = document.getElementById(id);
+      if(!def) return;
+      var open = def.classList.contains('open');
+      document.querySelectorAll('.gloss-def.open').forEach(function(d){ d.classList.remove('open'); });
+      document.querySelectorAll('.term[aria-expanded="true"]').forEach(function(t){ t.setAttribute('aria-expanded','false'); });
+      if(!open){
+        def.classList.add('open');
+        btn.setAttribute('aria-expanded','true');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
