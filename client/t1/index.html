@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zwire · Dossiers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0b;
+    --panel:#121214;
+    --panel-2:#17171a;
+    --line:#26262b;
+    --line-soft:#1d1d21;
+    --txt:#ececee;
+    --txt-dim:#9a9aa2;
+    --txt-faint:#6a6a72;
+    --amber:#e0a83c;
+    --amber-soft:rgba(224,168,60,.14);
+    --amber-line:rgba(224,168,60,.40);
+    --red:#d9534f;
+    --green:#5fb87a;
+    --space:'Space Grotesk',sans-serif;
+    --sans:'Inter',sans-serif;
+    --mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--bg);
+    color:var(--txt);
+    font-family:var(--sans);
+    font-size:15px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:var(--mono)}
+
+  /* handling band */
+  .handling{
+    background:#000;
+    border-bottom:1px solid var(--amber-line);
+    color:var(--amber);
+    font-family:var(--mono);
+    font-size:10.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    text-align:center;
+    padding:8px 14px;
+    line-height:1.5;
+  }
+
+  /* top bar */
+  .topbar{
+    position:sticky;top:0;z-index:40;
+    background:rgba(10,10,11,.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 20px;
+    gap:12px;
+  }
+  .wordmark{
+    font-family:var(--space);font-weight:700;
+    font-size:19px;letter-spacing:.02em;
+  }
+  .wordmark b{color:var(--amber)}
+  .session{display:flex;align-items:center;gap:16px;font-family:var(--mono);font-size:11px;color:var(--txt-dim)}
+  .session .logout{color:var(--txt-faint);border:1px solid var(--line);padding:5px 10px;border-radius:4px}
+  @media(max-width:560px){
+    .session .access{display:none}
+    .topbar{padding:13px 16px}
+  }
+
+  .wrap{max-width:1040px;margin:0 auto;padding:26px 20px 60px}
+
+  /* title block */
+  .head{margin:14px 0 8px}
+  .head h1{
+    font-family:var(--space);font-weight:700;
+    font-size:clamp(30px,8vw,46px);letter-spacing:-.02em;line-height:1;
+  }
+  .head .sub{color:var(--txt-dim);font-size:13.5px;margin-top:10px}
+  .updatestrip{
+    margin-top:18px;
+    display:inline-flex;align-items:center;gap:10px;
+    background:var(--amber-soft);
+    border:1px solid var(--amber-line);
+    border-radius:6px;
+    padding:9px 13px;
+    font-family:var(--mono);font-size:11.5px;color:var(--amber);
+    letter-spacing:.02em;
+  }
+  .updatestrip .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px var(--amber);flex:none}
+
+  /* folder section */
+  .folder{margin-top:36px}
+  .folder-head{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:14px;flex-wrap:wrap;
+    border-bottom:1px solid var(--line);
+    padding-bottom:12px;
+  }
+  .folder-label{
+    display:flex;align-items:baseline;gap:12px;
+  }
+  .folder-label .tag{
+    font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--txt-faint);
+  }
+  .folder-label .name{
+    font-family:var(--space);font-weight:600;font-size:18px;letter-spacing:-.01em;
+  }
+  .folder-label .count{font-family:var(--mono);font-size:12px;color:var(--amber)}
+  .chips-filter{display:flex;gap:8px}
+  .chip-f{
+    font-family:var(--mono);font-size:11px;
+    color:var(--txt-dim);
+    border:1px solid var(--line);
+    background:transparent;
+    padding:6px 12px;border-radius:20px;cursor:pointer;
+    transition:.15s;
+  }
+  .chip-f.on{background:var(--amber);color:#0a0a0b;border-color:var(--amber);font-weight:600}
+  .chip-f:not(.on):hover{border-color:var(--amber-line);color:var(--txt)}
+
+  /* cards grid */
+  .grid{
+    margin-top:22px;
+    display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+  }
+  @media(max-width:860px){.grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:600px){.grid{grid-template-columns:1fr}}
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    display:flex;flex-direction:column;
+    transition:border-color .18s, transform .18s;
+    position:relative;
+  }
+  .card:hover{border-color:var(--amber-line);transform:translateY(-2px)}
+  .card:active{transform:translateY(0)}
+  .card .sev{position:absolute;top:0;left:0;width:3px;height:100%;}
+  .sev-high{background:var(--red)}
+  .sev-med{background:var(--amber)}
+  .sev-clean{background:var(--green)}
+
+  .card-top{display:flex;gap:14px;padding:18px 18px 14px}
+  /* portrait placeholder */
+  .portrait{
+    width:62px;height:74px;flex:none;border-radius:6px;
+    border:1px solid var(--line);
+    background:
+      radial-gradient(120% 90% at 50% 18%, rgba(224,168,60,.18), transparent 60%),
+      var(--panel-2);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;overflow:hidden;
+  }
+  .portrait svg{width:100%;height:100%;display:block}
+  .portrait .mono-mark{
+    font-family:var(--space);font-weight:700;font-size:22px;color:var(--amber);
+    z-index:1;
+  }
+  .portrait .frame-tick{position:absolute;top:5px;right:5px;font-family:var(--mono);font-size:7.5px;color:var(--txt-faint);letter-spacing:.1em}
+
+  .card-id{min-width:0}
+  .card-id .code{font-family:var(--mono);font-size:10.5px;color:var(--amber);letter-spacing:.06em}
+  .card-id .name{font-family:var(--space);font-weight:600;font-size:17px;margin-top:3px;line-height:1.15}
+  .card-id .role{font-size:12px;color:var(--txt-dim);margin-top:4px}
+
+  .verdict{padding:0 18px 14px;font-size:13px;color:var(--txt);line-height:1.5;border-bottom:1px solid var(--line-soft)}
+
+  .chips{display:flex;flex-wrap:wrap;gap:6px;padding:13px 18px 4px}
+  .chip{
+    font-family:var(--mono);font-size:10px;letter-spacing:.02em;
+    color:var(--txt-dim);border:1px solid var(--line);
+    padding:4px 8px;border-radius:4px;background:var(--panel-2);
+  }
+  .chip.key{color:var(--amber);border-color:var(--amber-line);background:var(--amber-soft)}
+
+  .card-foot{
+    margin-top:auto;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 18px;border-top:1px solid var(--line-soft);
+    gap:10px;
+  }
+  .grade-blk{display:flex;flex-direction:column;gap:2px}
+  .grade-blk .lbl{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--txt-faint)}
+  .grade-blk .val{font-family:var(--space);font-weight:600;font-size:15px;color:var(--amber)}
+  .status{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px}
+  .status .sdot{width:8px;height:8px;border-radius:50%;flex:none}
+  .status.s-high .sdot{background:var(--red);box-shadow:0 0 7px var(--red)}
+  .status.s-med .sdot{background:var(--amber);box-shadow:0 0 7px var(--amber)}
+  .status.s-clean .sdot{background:var(--green);box-shadow:0 0 7px var(--green)}
+  .status.s-high{color:#e89a97}
+  .status.s-med{color:var(--amber)}
+  .status.s-clean{color:var(--green)}
+
+  .card-meta{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:9px 18px;background:var(--panel-2);
+    font-family:var(--mono);font-size:10px;color:var(--txt-faint);
+    border-top:1px solid var(--line-soft);
+  }
+  .card-meta .upd{color:var(--amber)}
+
+  /* contact block */
+  .contact{
+    margin-top:40px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:24px 22px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:20px;flex-wrap:wrap;
+  }
+  .contact .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--txt-faint)}
+  .contact .line{font-family:var(--space);font-weight:600;font-size:19px;margin-top:6px}
+  .contact-actions{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{
+    font-family:var(--mono);font-size:12px;
+    padding:11px 16px;border-radius:6px;cursor:pointer;
+    border:1px solid var(--line);background:var(--panel-2);color:var(--txt);
+    transition:.15s;
+  }
+  .btn:hover{border-color:var(--amber-line)}
+  .btn.primary{background:var(--amber);color:#0a0a0b;border-color:var(--amber);font-weight:600}
+  .btn.primary:hover{background:#eab94f}
+  @media(max-width:560px){
+    .contact{flex-direction:column;align-items:stretch}
+    .contact-actions{flex-direction:column}
+    .btn{text-align:center}
+  }
+
+  /* footer */
+  footer{
+    margin-top:46px;border-top:1px solid var(--line);padding-top:22px;
+    color:var(--txt-faint);font-size:11.5px;line-height:1.7;
+  }
+  footer .colophon{font-family:var(--mono);font-size:10.5px;margin-top:14px;color:var(--txt-dim);letter-spacing:.04em}
+</style>
+</head>
+<body>
+
+<div class="handling">CONFIDENTIEL · DIFFUSION RESTREINTE · PRÉPARÉ POUR P. — · ÉMIS 2026-06-01</div>
+
+<div class="topbar">
+  <div class="wordmark">Z<b>w</b>ire</div>
+  <div class="session">
+    <span class="access mono">Dernier accès 2026-05-28</span>
+    <a href="#" class="logout mono">Déconnexion</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="head">
+    <h1>Dossiers</h1>
+    <div class="sub">Trois sujets · dernière mise à jour 2026-06-01</div>
+    <div class="updatestrip"><span class="dot"></span>Mis à jour depuis le 2026-05-28 — Benjamin Mauerberger</div>
+  </div>
+
+  <section class="folder">
+    <div class="folder-head">
+      <div class="folder-label">
+        <span class="tag">Engagement</span>
+        <span class="name">Phuket</span>
+        <span class="count">03</span>
+      </div>
+      <div class="chips-filter">
+        <button class="chip-f on">Tous</button>
+        <button class="chip-f">Actifs</button>
+        <button class="chip-f">Mis à jour</button>
+      </div>
+    </div>
+
+    <div class="grid">
+
+      <!-- CARD 1 -->
+      <a class="card" href="mauerberger.html">
+        <span class="sev sev-high"></span>
+        <div class="card-top">
+          <div class="portrait">
+            <span class="frame-tick">REF · 1979</span>
+            <span class="mono-mark">BM</span>
+          </div>
+          <div class="card-id">
+            <div class="code">ZWR-MAU-1979</div>
+            <div class="name">Benjamin Mauerberger</div>
+            <div class="role">Principal · financier en fuite</div>
+          </div>
+        </div>
+        <div class="verdict">Recherché sous mandats actifs — Thaïlande, gel à Singapour, ~620 M USD saisis.</div>
+        <div class="chips">
+          <span class="chip">Fugitif</span>
+          <span class="chip key">~620 M USD saisis</span>
+          <span class="chip">Mandats Thaïlande</span>
+        </div>
+        <div class="card-foot">
+          <div class="grade-blk"><span class="lbl">Confiance</span><span class="val">Modérée</span></div>
+          <span class="status s-high"><span class="sdot"></span>Actif</span>
+        </div>
+        <div class="card-meta"><span>v1 · 2026-06-01</span><span class="upd">Mis à jour</span></div>
+      </a>
+
+      <!-- CARD 2 -->
+      <a class="card" href="mauerberger.html">
+        <span class="sev sev-med"></span>
+        <div class="card-top">
+          <div class="portrait">
+            <span class="frame-tick">REF · 1951</span>
+            <span class="mono-mark">AB</span>
+          </div>
+          <div class="card-id">
+            <div class="code">ZWR-BEN-1951</div>
+            <div class="name">Ari Ben-Menashe</div>
+            <div class="role">Agent d'influence étrangère</div>
+          </div>
+        </div>
+        <div class="verdict">Opérateur actif — mandats FARA en cours. Net sur sanctions, exposé via ses clients.</div>
+        <div class="chips">
+          <span class="chip key">FARA actif</span>
+          <span class="chip">Net sur sanctions</span>
+          <span class="chip">Exposé via clients</span>
+        </div>
+        <div class="card-foot">
+          <div class="grade-blk"><span class="lbl">Confiance</span><span class="val">Élevée</span></div>
+          <span class="status s-med"><span class="sdot"></span>Sous surveillance</span>
+        </div>
+        <div class="card-meta"><span>v1 · 2026-06-01</span><span></span></div>
+      </a>
+
+      <!-- CARD 3 -->
+      <a class="card" href="mauerberger.html">
+        <span class="sev sev-clean"></span>
+        <div class="card-top">
+          <div class="portrait">
+            <span class="frame-tick">REF · 1968</span>
+            <span class="mono-mark">AB</span>
+          </div>
+          <div class="card-id">
+            <div class="code">ZWR-BIF-1968</div>
+            <div class="name">Alain Bifani</div>
+            <div class="role">Technocrate des finances publiques</div>
+          </div>
+        </div>
+        <div class="verdict">Exactement celui qu'il paraît être — identité élevée, dossier propre. Le bruit adverse est politique.</div>
+        <div class="chips">
+          <span class="chip key">Identité élevée</span>
+          <span class="chip">Dossier propre</span>
+        </div>
+        <div class="card-foot">
+          <div class="grade-blk"><span class="lbl">Confiance</span><span class="val">Élevée</span></div>
+          <span class="status s-clean"><span class="sdot"></span>Clôturé</span>
+        </div>
+        <div class="card-meta"><span>v1 · 2026-06-01</span><span></span></div>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="contact">
+    <div>
+      <div class="lbl">Contact cabinet</div>
+      <div class="line">Question · vérification · nouvelle enquête</div>
+    </div>
+    <div class="contact-actions">
+      <button class="btn">Message sécurisé</button>
+      <button class="btn">Telegram</button>
+      <button class="btn primary">Demander une enquête</button>
+    </div>
+  </section>
+
+  <footer>
+    Renseignement privilégié, base à destinataire unique. Diffusion ultérieure non autorisée. Sources publiques et licites, notées (Admiralty) ; confiance notée (ICD-203). Une évaluation est un jugement analytique, pas une certitude.
+    <div class="colophon">Zwire · cabinet de renseignement privé · client.zwire.pro</div>
+  </footer>
+
+</div>
+
+<script>
+  // filter chips — visual state only (single folder demo)
+  document.querySelectorAll('.chip-f').forEach(function(c){
+    c.addEventListener('click',function(){
+      document.querySelectorAll('.chip-f').forEach(function(x){x.classList.remove('on')});
+      c.classList.add('on');
+      var f=c.textContent.trim();
+      document.querySelectorAll('.card').forEach(function(card){
+        var show=true;
+        if(f==='Actifs'){show=!!card.querySelector('.status.s-high,.status.s-med');}
+        else if(f==='Mis à jour'){show=!!card.querySelector('.card-meta .upd');}
+        card.style.display=show?'flex':'none';
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
