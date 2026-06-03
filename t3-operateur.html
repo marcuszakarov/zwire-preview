@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zwire · Private intelligence</title>
+<meta name="description" content="Zwire — a private intelligence cabinet. Open-source intelligence, lawfully sourced and graded for confidence.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0b0d11;--ink-2:#0f1217;
+    --line:rgba(233,236,240,.07);--line-2:rgba(233,236,240,.13);
+    --fg:#e9ecf0;--fg-2:#9aa3ad;--fg-3:#6b7480;
+    --accent:#86b8c9;--accent-dim:rgba(134,184,201,.10);
+    --serif:'Newsreader',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace;
+    --maxw:1080px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{background:var(--ink);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(120% 55% at 50% -12%,rgba(134,184,201,.05),transparent 60%)}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(22px,5vw,52px);position:relative;z-index:1}
+  .label{font-family:var(--mono);font-size:.68rem;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--fg-3)}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(134,184,201,.45)}70%{box-shadow:0 0 0 6px rgba(134,184,201,0)}100%{box-shadow:0 0 0 0 rgba(134,184,201,0)}}
+  .led{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 rgba(134,184,201,.5);animation:pulse 2.6s infinite;flex-shrink:0}
+
+  .skip{position:absolute;left:-999px}.skip:focus{left:16px;top:16px;z-index:50;background:var(--ink-2);padding:8px 14px;border:1px solid var(--line-2);border-radius:6px}
+
+  header{position:fixed;top:0;left:0;right:0;z-index:30;background:rgba(11,13,17,.74);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;gap:24px;height:64px}
+  .brand{font-family:var(--serif);font-size:1.3rem;font-weight:500}.brand .d{color:var(--accent)}
+  .nav .sp{flex:1}
+  .nav nav{display:flex;gap:24px}
+  .nav nav a{font-size:.85rem;color:var(--fg-2);transition:color .2s}.nav nav a:hover{color:var(--fg)}
+  .status{display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3)}
+  .clogin{font-family:var(--mono);font-size:.74rem;letter-spacing:.04em;color:var(--fg-2)}.clogin:hover{color:var(--accent)}
+  .btn{font-size:.82rem;font-weight:500;color:var(--ink);background:var(--fg);border:1px solid var(--fg);border-radius:999px;padding:9px 18px;transition:.2s;white-space:nowrap}
+  .btn:hover{background:var(--accent);border-color:var(--accent)}
+  .btn.ghost{background:transparent;color:var(--fg);border-color:var(--line-2)}.btn.ghost:hover{border-color:var(--accent);color:var(--accent)}
+
+  section{padding-block:clamp(70px,11vw,124px);border-top:1px solid var(--line)}
+  .seclabel{margin-bottom:42px}
+  h2{font-family:var(--serif);font-weight:400;font-size:clamp(1.7rem,4vw,2.6rem);line-height:1.12;letter-spacing:-.01em}
+  h2 em{font-style:italic;color:var(--accent)}
+  .lede{max-width:60ch;color:var(--fg-2);font-size:1.05rem;margin-top:18px}
+
+  .hero{padding-top:clamp(140px,22vw,200px);padding-bottom:clamp(70px,10vw,110px);border-top:none}
+  .hero .over{display:flex;align-items:center;gap:8px;margin-bottom:26px}
+  .hero h1{font-family:var(--serif);font-weight:300;letter-spacing:-.02em;font-size:clamp(2.7rem,8.4vw,5.2rem);line-height:1.0}
+  .hero h1 .d{color:var(--accent)}
+  .hero .one{max-width:48ch;color:var(--fg-2);font-size:clamp(1.1rem,2.3vw,1.32rem);margin-top:30px;line-height:1.55}
+  .hero .one b{color:var(--fg);font-weight:500}
+  .hero .cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:44px}
+  .arrow{display:inline-flex;align-items:center;gap:8px;color:var(--fg-2);padding:9px 0;transition:color .2s}.arrow:hover{color:var(--accent)}
+
+  .pillars{display:grid;grid-template-columns:repeat(4,1fr)}
+  .pillar{padding:6px 26px 6px 0}
+  .pillar+.pillar{border-left:1px solid var(--line);padding-left:26px}
+  .pillar .pk{font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;margin-bottom:14px}
+  .pillar h3{font-family:var(--serif);font-weight:500;font-size:1.14rem;margin-bottom:10px}
+  .pillar p{font-size:.9rem;color:var(--fg-2);line-height:1.55}
+
+  /* operator method: text + signal panel */
+  .opgrid{display:grid;grid-template-columns:1fr .82fr;gap:54px;align-items:start;margin-top:8px}
+  .opgrid .copy h2{margin-bottom:18px}
+  .opgrid .copy p{color:var(--fg-2);font-size:1rem;line-height:1.65;max-width:48ch}
+  .opgrid .copy p+p{margin-top:16px}
+  .opgrid .copy .infra{margin-top:22px;font-family:var(--mono);font-size:.82rem;color:var(--fg);line-height:1.6;border-top:1px solid var(--line);padding-top:18px}
+  .opgrid .copy .infra .acc{color:var(--accent)}
+  .signal{background:var(--ink-2);border:1px solid var(--line);border-radius:12px;padding:24px 26px;font-family:var(--mono)}
+  .signal .top{display:flex;align-items:center;gap:8px;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--fg-3);padding-bottom:16px;border-bottom:1px solid var(--line);margin-bottom:8px}
+  .signal .row{display:flex;justify-content:space-between;gap:16px;padding:11px 0;font-size:.8rem;border-bottom:1px solid var(--line)}
+  .signal .row:last-child{border-bottom:none;padding-bottom:0}
+  .signal .row .k{color:var(--fg-3);letter-spacing:.04em}
+  .signal .row .v{color:var(--fg)}
+  .signal .row .v.acc{color:var(--accent)}
+
+  .grades{margin-top:60px}
+  .grades .gl{font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--fg-3);margin-bottom:20px}
+  .grow{display:flex;flex-wrap:wrap;gap:28px 44px}
+  .grade .gn{font-family:var(--serif);font-size:1.18rem;color:var(--fg)}
+  .grade.c1 .gn{color:var(--accent)}
+  .grade .gd{font-size:.82rem;color:var(--fg-3);margin-top:4px;max-width:22ch}
+
+  .offers{display:grid;grid-template-columns:repeat(3,1fr)}
+  .offer{padding:4px 30px 4px 0;display:flex;flex-direction:column}
+  .offer+.offer{border-left:1px solid var(--line);padding-left:30px}
+  .offer .tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);height:13px;margin-bottom:16px}
+  .offer h3{font-family:var(--serif);font-weight:500;font-size:1.5rem}
+  .offer.reco h3{color:var(--accent)}
+  .offer .price{font-family:var(--mono);font-size:1.5rem;color:var(--fg);margin-top:12px}
+  .offer .price .from{font-size:.66rem;color:var(--fg-3);letter-spacing:.12em;text-transform:uppercase;margin-right:6px}
+  .offer .pitch{font-size:.96rem;color:var(--fg-2);margin-top:18px;line-height:1.6;flex:1}
+  .offer .pitch b{color:var(--fg);font-weight:500}
+  .offer .req{margin-top:26px}
+  .offer .req a{font-size:.84rem}
+
+  /* portal as centerpiece */
+  .portal{display:grid;grid-template-columns:1.1fr .9fr;gap:50px;align-items:center}
+  .portal .biz{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+  .portal h2{margin-bottom:16px}
+  .portal p{color:var(--fg-2);font-size:1rem;line-height:1.65;max-width:46ch}
+  .portal .deliver{margin-top:20px;font-size:.96rem;color:var(--fg-2)}
+  .portal .deliver b{color:var(--fg)}
+  .portal .portal-link{display:inline-flex;align-items:center;gap:8px;margin-top:26px;font-family:var(--mono);font-size:.84rem;color:var(--fg);border:1px solid var(--line-2);border-radius:999px;padding:11px 20px;transition:.2s}
+  .portal .portal-link:hover{border-color:var(--accent);color:var(--accent)}
+
+  .channels{margin-top:6px}
+  .chan{display:flex;align-items:baseline;gap:20px;padding:22px 0;border-bottom:1px solid var(--line)}
+  .chan:first-child{border-top:1px solid var(--line)}
+  .chan .ck{font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-3);width:120px;flex-shrink:0}
+  .chan .ck .pref{color:var(--accent)}
+  .chan .cv{font-family:var(--serif);font-size:1.18rem;color:var(--fg)}
+  .chan .ar{margin-left:auto;color:var(--accent);font-family:var(--mono)}
+  .contact-foot{margin-top:26px;color:var(--fg-3);font-size:.9rem}
+
+  footer{border-top:1px solid var(--line);padding-block:56px}
+  footer .disc{max-width:80ch;color:var(--fg-3);font-size:.82rem;line-height:1.7}
+  footer .meta{display:flex;justify-content:space-between;align-items:center;margin-top:30px;flex-wrap:wrap;gap:14px}
+  footer .meta .brand{font-size:1.05rem}
+  footer .meta .cp{font-family:var(--mono);font-size:.7rem;color:var(--fg-3);letter-spacing:.08em}
+
+  @media(max-width:900px){
+    .pillars{grid-template-columns:1fr 1fr;gap:34px 0}
+    .pillar,.pillar+.pillar{border-left:none;padding:0}
+    .offers{grid-template-columns:1fr;gap:44px}
+    .offer,.offer+.offer{border-left:none;padding:0}
+    .opgrid{grid-template-columns:1fr;gap:38px}
+    .portal{grid-template-columns:1fr;gap:30px}
+  }
+  @media(max-width:600px){
+    body{font-size:15px}
+    .nav nav,.clogin,.status{display:none}
+    .pillars{grid-template-columns:1fr;gap:30px}
+    .chan{flex-wrap:wrap;gap:4px 16px}.chan .ck{width:auto}.chan .ar{margin-left:0}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+
+<header>
+  <div class="wrap nav">
+    <span class="brand">Zwire<span class="d">.</span></span>
+    <div class="sp"></div>
+    <nav>
+      <a href="#standard">How it works</a>
+      <a href="#offers">Offers</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <span class="status"><span class="led"></span>cabinet&nbsp;&middot;&nbsp;live</span>
+    <a class="clogin" href="https://client.zwire.pro">Client login</a>
+    <a class="btn" href="#contact">Request a brief</a>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero">
+    <div class="wrap">
+      <div class="over"><span class="led"></span><span class="label">Open-source intelligence cabinet</span></div>
+      <h1>Private intelligence<span class="d">.</span></h1>
+      <p class="one">Open-source intelligence, lawfully sourced and graded for confidence — <b>for decisions that can't afford to be wrong.</b></p>
+      <div class="cta">
+        <a class="btn" href="#offers">Request a brief</a>
+        <a class="arrow" href="#method">See the method&nbsp;&rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="standard">
+    <div class="wrap">
+      <div class="seclabel"><span class="label">The standard behind every brief</span></div>
+      <div class="pillars">
+        <div class="pillar"><div class="pk">Sourcing</div><h3>Lawful sourcing</h3><p>Public and licensed sources only. We never hack, impersonate, or use unlawfully obtained data.</p></div>
+        <div class="pillar"><div class="pk">Review</div><h3>Human-reviewed</h3><p>Every brief is checked and signed off by a human analyst, not a model.</p></div>
+        <div class="pillar"><div class="pk">Grading</div><h3>Graded for confidence</h3><p>Each finding carries a grade, so you know what is certain and what is not.</p></div>
+        <div class="pillar"><div class="pk">Handling</div><h3>One recipient</h3><p>Delivered to a single recipient. We never reveal a client or a confidential source.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="method">
+    <div class="wrap">
+      <div class="seclabel"><span class="label">How the cabinet works</span></div>
+      <div class="opgrid">
+        <div class="copy">
+          <h2>An operation, <em>not a search engine.</em></h2>
+          <p>We point lawful open-source intelligence at a subject, corroborate every claim across independent sources, grade each finding for confidence, and put a human analyst's name on the file before it moves.</p>
+          <p>Source, cross-check, grade, sign off — the same cycle, every time, whether the subject is a name, a company, or your own exposure.</p>
+          <div class="infra"><span class="acc">Run on our own infrastructure.</span> Your file is never handed to a third-party platform — it stays inside the cabinet, start to finish.</div>
+        </div>
+        <div class="signal" aria-hidden="true">
+          <div class="top"><span class="led"></span>Zwire cabinet &middot; live</div>
+          <div class="row"><span class="k">SUBJECT</span><span class="v">in scope</span></div>
+          <div class="row"><span class="k">SOURCES</span><span class="v">lawful &middot; licensed</span></div>
+          <div class="row"><span class="k">CROSS-CHECK</span><span class="v">independent</span></div>
+          <div class="row"><span class="k">EACH FINDING</span><span class="v acc">graded</span></div>
+          <div class="row"><span class="k">ANALYST</span><span class="v">signed</span></div>
+          <div class="row"><span class="k">DELIVERY</span><span class="v">your channel</span></div>
+        </div>
+      </div>
+      <div class="grades">
+        <div class="gl">Every finding, graded</div>
+        <div class="grow">
+          <div class="grade c1"><div class="gn">Confirmed</div><div class="gd">Independently corroborated.</div></div>
+          <div class="grade"><div class="gn">Probable</div><div class="gd">Strongly supported, not certain.</div></div>
+          <div class="grade"><div class="gn">Possible</div><div class="gd">Plausible, limited support.</div></div>
+          <div class="grade"><div class="gn">Unverified</div><div class="gd">Noted, not yet checked.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="offers">
+    <div class="wrap">
+      <div class="seclabel"><span class="label">Three depths, one standard</span></div>
+      <div class="offers">
+        <div class="offer">
+          <div class="tag"></div>
+          <h3>Quick</h3>
+          <div class="price">$200</div>
+          <p class="pitch">Put the cabinet's lawful OSINT on a single subject and get a sourced, confidence-graded read within 10 hours. A person, a company — or <b>run it on your own name first</b> to see what the open world already holds.</p>
+          <div class="req"><a class="btn ghost" href="#contact">Request Quick</a></div>
+        </div>
+        <div class="offer reco">
+          <div class="tag">Recommended</div>
+          <h3>Full Report</h3>
+          <div class="price">$1,000</div>
+          <p class="pitch">A monitored investigation with a dedicated analyst on your file for days — full provenance, one revision, every finding graded. <b>Delivered on the channel you prefer — Telegram by default.</b></p>
+          <div class="req"><a class="btn" href="#contact">Request Full Report</a></div>
+        </div>
+        <div class="offer">
+          <div class="tag">Business only · client portal</div>
+          <h3>Business</h3>
+          <div class="price"><span class="from">from</span>$3,500</div>
+          <p class="pitch">Scoped engagements for legal, corporate and high-sensitivity matters — strict handling, a single agreed recipient, and a <b>private password-protected portal</b> on our own infrastructure where your files live.</p>
+          <div class="req"><a class="btn ghost" href="#contact">Request Business</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="access">
+    <div class="wrap">
+      <div class="portal">
+        <div>
+          <div class="biz">Business engagements &middot; client portal</div>
+          <h2>Your file, <em>behind one login.</em></h2>
+          <p>Business clients get a private room on Zwire's own infrastructure — every dossier ranked, graded and password-protected, ready the moment you sign in.</p>
+          <p class="deliver">Everything else reaches you where you already are: <b>Telegram by default</b>, email or Proton on request.</p>
+          <a class="portal-link" href="https://client.zwire.pro">Client login&nbsp;&rarr;</a>
+        </div>
+        <div class="signal" aria-hidden="true">
+          <div class="top"><span class="led"></span>client.zwire.pro</div>
+          <div class="row"><span class="k">ACCESS</span><span class="v acc">Business only</span></div>
+          <div class="row"><span class="k">AUTH</span><span class="v">password</span></div>
+          <div class="row"><span class="k">YOUR FILES</span><span class="v">ranked &middot; graded</span></div>
+          <div class="row"><span class="k">HOSTING</span><span class="v">own infrastructure</span></div>
+          <div class="row"><span class="k">DELIVERY</span><span class="v">Telegram default</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="seclabel"><span class="label">Reach the cabinet</span></div>
+      <h2>Every channel reaches the <em>cabinet directly.</em></h2>
+      <div class="channels">
+        <a class="chan" href="#"><span class="ck"><span class="pref">Telegram · preferred</span></span><span class="cv">@placeholder</span><span class="ar">&rarr;</span></a>
+        <a class="chan" href="mailto:contact@zwire.pro"><span class="ck">Email</span><span class="cv">contact@zwire.pro</span><span class="ar">&rarr;</span></a>
+        <a class="chan" href="mailto:zwire@protonmail.com"><span class="ck">Proton</span><span class="cv">zwire@protonmail.com</span><span class="ar">&rarr;</span></a>
+      </div>
+      <p class="contact-foot">Reply within 24 hours. Scope and fee agreed in private before any work begins.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="disc">Zwire is a private intelligence cabinet. We draw exclusively from lawful public and licensed sources. Every finding is sourced and graded for confidence, and delivered to a single recipient. We never hack, impersonate, or use unlawfully obtained data, and we never reveal a client or a confidential source. Briefs are decision-support, not legal, financial or professional advice; confidence grades express analytical assessment, not certainty. Operating entity and registration available on request.</p>
+    <div class="meta">
+      <span class="brand">Zwire<span class="d" style="color:var(--accent)">.</span></span>
+      <span class="cp">&copy; 2026 Zwire &middot; T3 Opérateur</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
